@@ -1,0 +1,67 @@
+.slideBar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background-color: #f4f4f4;
+    max-height: 100vh;
+    border-top: 1px solid #d5d5d5;
+}
+
+.slideBox {
+    position: relative;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 8px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.slideBox:hover {
+    border-color: #a3a3a3;
+    transform: translateY(-2px);
+}
+
+.slideBox.selected {
+    border-color: #2e86ba;
+    background-color: #e3f2fd;
+}
+
+.slideBox.dragging {
+    opacity: 0.6;
+}
+
+.slideNumber {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    background: #2e86ba;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 2;
+}
+
+.thumbnailContainer {
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.thumbnail {
+    display: block;
+    border-radius: 4px;
+}
+
+.slideBox.dragOver {
+    border: 2px dashed #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+}

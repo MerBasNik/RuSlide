@@ -1,0 +1,10 @@
+.toolBarButton {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    padding: 10px;
+}
+.toolBarButton:hover {
+    background-color: #a3a3a3;
+    border-radius: 5px;
+}

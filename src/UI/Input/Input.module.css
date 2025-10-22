@@ -1,0 +1,15 @@
+.inputWidget {
+    visibility: visible;
+}
+
+.inputWidget {
+    visibility: hidden;
+}
+
+.input {
+    font-size: 20px;
+    margin: 0;
+    padding: 0 10px;
+    text-decoration: none;
+    visibility: visible;
+}

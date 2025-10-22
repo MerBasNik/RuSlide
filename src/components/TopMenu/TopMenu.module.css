@@ -1,0 +1,76 @@
+.topMenu {
+    background-color: #f4f4f4;
+    width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.menuBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    margin-bottom: 5px;
+}
+
+.menuBarInner {
+    display: flex;
+}
+
+.slideShow {
+    padding: 15px 25px;
+    border-radius: 15px;
+    border: 1px solid #a3a3a3;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.slideShow:hover {
+    border: 2px solid #878787;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+
+.menuBlock {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.presName {
+    font-size: 20px;
+    margin: 0;
+    padding: 0 10px;
+}
+
+.menuItems {
+    display: flex;
+    background-color: #f4f4f4;
+}
+
+.menuItem {
+    font-size: 16px;
+    font-family: "Roboto", sans-serif;
+}
+
+.toolBar {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    background-color: #d5d5d5;
+    list-style-type: none;
+    box-sizing: border-box;
+    border-radius: 25px;
+    padding: 0 20px;
+    gap: 10px;
+}
+
+.toolbarIcon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}

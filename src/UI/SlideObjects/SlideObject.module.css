@@ -1,0 +1,60 @@
+.slideObj, .textElement {
+    position: absolute;
+    transition: all 0.15s ease;
+    border: 2px solid transparent;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+.slideObj.selected, .textElement.selected {
+    border: 2px solid #007bff;
+    background-color: rgba(0, 123, 255, 0.05);
+    z-index: 100;
+}
+
+.slideObj .image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+}
+
+.textElement {
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.4;
+    display: flex;
+    align-items: flex-start;
+    padding: 8px;
+    min-width: 50px;
+    min-height: 20px;
+    overflow: hidden;
+}
+
+.textElement:focus-within {
+    outline: none;
+    border: 2px solid #007bff;
+    background-color: rgba(0, 123, 255, 0.08);
+}
+
+.slideObj:hover:not(.selected),
+.textElement:hover:not(.selected) {
+    border: 1px solid #ccc;
+}
+
+.editableContent {
+    width: 100%;
+    height: 100%;
+    outline: none;
+    border: none;
+    background: transparent;
+    cursor: text;
+    user-select: text;
+}
+
+.slideObj:not(.editing) .editableContent {
+    user-select: none;
+    cursor: pointer;
+}
