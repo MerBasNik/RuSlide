@@ -11,7 +11,7 @@ function App({ editor }: AppProps) {
     return (
         <div className={classes.app}>
             <TopMenu editor={editor} presentationName={editor.name} />
-            <EditorContainer editor={editor} SlidesArray={editor.slides} />
+            <EditorContainer editor={editor} />
         </div>
     );
 }

@@ -79,9 +79,9 @@ presentationMin = selectSlide(presentationMin, slideMin.id);
 presentationMin = addSlideToSelection(presentationMin, slideMin2.id);
 console.log("pres: ", presentationMin);
 
-picture = setRotation(picture, 90);
-picture = setSize(picture, { width: 230, height: 120 });
-picture = setPosition(picture, { x: 30, y: 40 });
+// picture = setRotation(picture, 90);
+// picture = setSize(picture, { width: 230, height: 120 });
+// picture = setPosition(picture, { x: 30, y: 40 });
 console.log("picture: ", picture);
 
 // slideMin = deleteObject(slideMin, slideMin.id);

@@ -8,18 +8,13 @@ type WorkSpaceProps = {
 
 const WorkSpace = ({ editor }: WorkSpaceProps) => {
     const slide = editor.slides.get(editor.currentSlide);
-    const objects = Array.from(slide?.objects?.values() || []);
+    // const objects = Array.from(slide?.objects?.values() || []);
     if (!slide) {
         return null;
     }
     return (
         <section className={classes.workSpace}>
-            <Slide
-                editor={editor}
-                slide={slide}
-                selectedObjectId={slide.selectedObjects[0]}
-                objects={objects}
-            />
+            <Slide slideId={editor.currentSlide} />
         </section>
     );
 };

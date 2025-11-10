@@ -1,9 +1,13 @@
 import { useCallback } from "react";
-import type { Presentation } from "../store/types/Presentation/Presentation.ts";
-import type { Slide as TSlide } from "../store/types/Presentation/Slide.ts";
-import {dispatch} from "../store/StoreEditor/Editor.tsx";
-import {setPosition, setSize} from "../store/types/SlideObject/DefaultObject.ts";
-import {setContent} from "../store/types/SlideObject/Text/Text.ts";
+import type { Presentation } from "../../store/types/Presentation/Presentation.ts";
+import type { Slide as TSlide } from "../../store/types/Presentation/Slide.ts";
+import { dispatch } from "../../store/StoreEditor/Editor.tsx";
+import {
+    type Position,
+    setPosition,
+    setSize,
+} from "../../store/types/SlideObject/DefaultObject.ts";
+import { setContent } from "../../store/types/SlideObject/Text/Text.ts";
 
 interface UseSlideObjectsProps {
     editor: Presentation;
@@ -12,15 +16,15 @@ interface UseSlideObjectsProps {
 
 export const useSlideObjects = ({ editor, slide }: UseSlideObjectsProps) => {
     const updateObjectPosition = useCallback(
-        (objId: string, x: number, y: number) => {
-            dispatch(setPosition, { editor, data: [slide.id, objId, x, y] });
+        (positions: Map<string, Position>) => {
+            dispatch(setPosition, { editor, data: [slide.id, positions] });
         },
         [editor, slide.id]
     );
 
     const updateObjectSize = useCallback(
         (objId: string, width: number, height: number) => {
-            dispatch(setSize, { editor, data: [slide.id, objId, width, height] });
+            dispatch(setSize, { editor, data: [slide.id, objId, { width, height }] });
         },
         [editor, slide.id]
     );

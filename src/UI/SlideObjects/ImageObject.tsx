@@ -1,41 +1,53 @@
 import classes from "./SlideObject.module.css";
 import { BaseObject } from "./BaseObject";
-import { type SlideObject, TypeObject } from "../../store/types/SlideObject/DefaultObject.ts";
-import type { ResizeDirection } from "../../hooks/useResize.tsx";
+import { type SlideObject } from "../../store/types/SlideObject/DefaultObject.ts";
+import type { ResizeDirection } from "../ResizeHandles/ResizeHandle.tsx";
+import type { DragItem } from "../../hooks/useDND/useDND.tsx";
 
 interface ImageObjectProps {
     element: SlideObject;
     isSelected: boolean;
     isDragging: boolean;
-    onMouseDown: (event: React.MouseEvent, element: SlideObject) => void;
-    onClick: (objId: string, event: React.MouseEvent) => void;
+    isCurrent: boolean;
+    isResizing: boolean;
+    dragItem: DragItem;
+    onDrag: (e: React.MouseEvent<HTMLDivElement>, item: DragItem) => void;
+    handleObjectClick: (objId: string, event: React.MouseEvent) => void;
     onResizeStart: (
         event: React.MouseEvent,
         direction: ResizeDirection,
         element: SlideObject
     ) => void;
+    style?: React.CSSProperties;
 }
 
 export const ImageObject = ({
     element,
     isSelected,
     isDragging,
-    onMouseDown,
-    onClick,
+    isResizing,
+    isCurrent,
+    handleObjectClick,
+    onDrag,
+    dragItem,
     onResizeStart,
+    style,
 }: ImageObjectProps) => {
     return (
         <BaseObject
             element={element}
             isSelected={isSelected}
             isDragging={isDragging}
-            onMouseDown={onMouseDown}
-            onClick={onClick}
+            isResizing={isResizing}
+            isCurrent={isCurrent}
+            onDrag={onDrag}
+            handleObjectClick={handleObjectClick}
             onResizeStart={onResizeStart}
-            className={`${classes.slideObj} ${isSelected ? classes.selected : ""}`}
+            dragItem={dragItem}
+            style={style}
         >
             <img
-                src={element.type == TypeObject.Image ? element.src : ""}
+                src={element.type == "image" ? element.src : ""}
                 alt="Slide content"
                 className={classes.image}
                 draggable={false}

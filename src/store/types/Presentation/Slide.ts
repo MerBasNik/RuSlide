@@ -5,17 +5,17 @@ import type { Presentation } from "./Presentation.ts";
 
 type Slide = {
     id: string;
-    order: number;
+    // order: number;
     objectsOrder: Array<string>;
     background: Background;
     objects: Map<string, SlideObject>;
     selectedObjects: Array<string>;
 };
 
-function createSlide(index: number): Slide {
+function createSlide(): Slide {
     return {
         id: generateId(),
-        order: index,
+        // order: index,
         objects: new Map<string, SlideObject>(),
         objectsOrder: [],
         selectedObjects: [],
@@ -41,7 +41,7 @@ function addObject(presentation: Presentation, slideId: string, obj: SlideObject
     newPresentation.slides.set(slideId, newSlide);
     return newPresentation;
 }
-function deleteObject(presentation: Presentation, slideId: string, objId: string): Presentation {
+function deleteObject(presentation: Presentation, slideId: string, objIds: string[]): Presentation {
     const slide = presentation.slides.get(slideId);
     if (!slide) {
         return presentation;
@@ -51,12 +51,14 @@ function deleteObject(presentation: Presentation, slideId: string, objId: string
         slides: new Map(presentation.slides),
     };
     const newObjects = new Map(slide.objects);
-    newObjects.delete(objId);
+    objIds.map((objId: string) => {
+        newObjects.delete(objId);
+    })
     const newSlide = {
         ...slide,
         objects: newObjects,
-        objectsOrder: slide.objectsOrder.filter(id => id !== objId),
-        selectedObjects: slide.selectedObjects.filter(id => id !== objId),
+        objectsOrder: slide.objectsOrder.filter(id => !objIds.includes(id)),
+        selectedObjects: slide.selectedObjects.filter(id => !objIds.includes(id)),
     };
     newPresentation.slides.set(slideId, newSlide);
     return newPresentation;
@@ -205,7 +207,6 @@ function setBackground(
     slideId: string,
     background: Background
 ): Presentation {
-    console.log(slideId, background);
     const slide = presentation.slides.get(slideId);
     if (!slide) {
         return presentation;
@@ -222,7 +223,6 @@ function setBackground(
         selectedObjects: [...slide.selectedObjects],
     };
     newPresentation.slides.set(slideId, newSlide);
-    console.log(newPresentation);
     return newPresentation;
 }
 

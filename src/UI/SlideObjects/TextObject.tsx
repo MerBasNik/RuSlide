@@ -1,66 +1,50 @@
 import { BaseObject } from "./BaseObject";
 import { type SlideObject, TypeObject } from "../../store/types/SlideObject/DefaultObject.ts";
 import type { ResizeDirection } from "../ResizeHandles/ResizeHandle.tsx";
-import classes from "./SlideObject.module.css";
+import type { DragItem } from "../../hooks/useDND/useDND.tsx";
+import { setContent } from "../../store/reducers/PresentationSlice.ts";
+import { useAppDispatch } from "../../hooks/useRedux.ts";
 
 interface TextObjectProps {
+    slideId: string;
     element: SlideObject;
     isSelected: boolean;
     isDragging: boolean;
-    onMouseDown: (event: React.MouseEvent, element: SlideObject) => void;
-    onClick: (objId: string, event: React.MouseEvent) => void;
+    isCurrent: boolean;
+    isResizing: boolean;
+    onDrag: (e: React.MouseEvent<HTMLDivElement>, item: DragItem) => void;
+    handleObjectClick: (objId: string, event: React.MouseEvent) => void;
     onResizeStart: (
         event: React.MouseEvent,
         direction: ResizeDirection,
         element: SlideObject
     ) => void;
-    onTextUpdate: (objId: string, content: string) => void;
+    dragItem: DragItem;
+    // onTextUpdate: (objId: string, content: string) => void;
+    style?: React.CSSProperties;
 }
 
 export const TextObject = ({
+    slideId,
     element,
     isSelected,
     isDragging,
-    onMouseDown,
-    onClick,
+    isResizing,
+    isCurrent,
+    handleObjectClick,
+    onDrag,
+    dragItem,
     onResizeStart,
-    onTextUpdate,
+    style,
 }: TextObjectProps) => {
-    let textStyle: React.CSSProperties;
-    if (element.type === TypeObject.Text) {
-        textStyle = {
-            fontSize: element.style.fontSize,
-            color: element.style.color,
-            fontFamily: element.style.fontFamily,
-            fontWeight: element.style.fontWeight,
-            padding: "8px",
-            userSelect: "none",
-            minWidth: "50px",
-            minHeight: "20px",
-            display: "flex",
-            alignItems: "flex-start",
-            overflow: "hidden",
-            wordWrap: "break-word",
-            whiteSpace: "pre-wrap",
-        };
-    } else {
-        textStyle = {};
-    }
-
-    const editableStyle: React.CSSProperties = {
-        width: "100%",
-        height: "100%",
-        outline: "none",
-        border: "none",
-        background: "transparent",
-        cursor: "text",
-    };
-
+    const dispatch = useAppDispatch();
+    // const presentation = useAppSelector(state => state.presentation);
     const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
         const newContent = e.currentTarget.textContent?.trim() || "";
         const content = element.type == TypeObject.Text ? element.content : "";
         if (newContent !== content) {
-            onTextUpdate(element.id, newContent);
+            // onTextUpdate(element.id, newContent);
+            dispatch(setContent({ slideId: slideId, objId: element.id, content: newContent }));
         }
     };
 
@@ -76,18 +60,19 @@ export const TextObject = ({
             element={element}
             isSelected={isSelected}
             isDragging={isDragging}
-            onMouseDown={onMouseDown}
-            onClick={onClick}
+            isResizing={isResizing}
+            isCurrent={isCurrent}
+            handleObjectClick={handleObjectClick}
+            onDrag={onDrag}
             onResizeStart={onResizeStart}
-            className={`${classes.textElement} ${isSelected ? classes.selected : ""}`}
-            style={textStyle}
+            dragItem={dragItem}
+            style={style}
         >
             <div
                 contentEditable
                 suppressContentEditableWarning
                 onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
-                style={editableStyle}
             >
                 {element.type == TypeObject.Text ? element.content : ""}
             </div>

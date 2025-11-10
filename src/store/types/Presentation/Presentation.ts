@@ -32,17 +32,19 @@ function addSlide(presentation: Presentation, slide: Slide): Presentation {
         slidesOrder: [...presentation.slidesOrder, slide.id],
     };
 }
-function deleteSlide(presentation: Presentation, slideId: string): Presentation {
+function deleteSlide(presentation: Presentation, slideIds: string[]): Presentation {
     const newSlides = new Map(presentation.slides);
-    newSlides.delete(slideId);
+    slideIds.map((id: string) => {
+        newSlides.delete(id);
+    })
 
     return {
         ...presentation,
         slides: newSlides,
-        slidesOrder: presentation.slidesOrder.filter(id => id !== slideId),
-        selectedSlides: presentation.selectedSlides.filter(id => id !== slideId),
+        slidesOrder: presentation.slidesOrder.filter(id => !slideIds.includes(id)),
+        selectedSlides: presentation.selectedSlides.filter(id => !slideIds.includes(id)),
         currentSlide:
-            presentation.currentSlide === slideId
+            slideIds.includes(presentation.currentSlide)
                 ? presentation.slidesOrder[0] || ""
                 : presentation.currentSlide,
     };
@@ -69,6 +71,20 @@ function addSlideToSelection(presentation: Presentation, selectSlideId: string):
         selectedSlides: [...presentation.selectedSlides, selectSlideId],
     };
 }
+function setSlidesOrder(presentation: Presentation, slidesOreder: string[]): Presentation {
+    const newSlidesOrder = [...slidesOreder];
+    return {
+        ...presentation,
+        slidesOrder: newSlidesOrder,
+    }
+}
+
+function setCurrentSlidePres(presentation: Presentation, currentSlide: string): Presentation {
+    return {
+        ...presentation,
+        currentSlide: currentSlide,
+    }
+}
 
 export type { Presentation };
 
@@ -79,4 +95,6 @@ export {
     deleteSlide,
     selectSlide,
     addSlideToSelection,
+    setSlidesOrder,
+    setCurrentSlidePres,
 };

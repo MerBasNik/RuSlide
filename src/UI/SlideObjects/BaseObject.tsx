@@ -1,22 +1,24 @@
-// BaseObject.tsx
 import { ResizeHandles } from "../ResizeHandles/ResizeHandle.tsx";
 import type { SlideObject } from "../../store/types/SlideObject/DefaultObject.ts";
-import type { ResizeDirection } from "../../hooks/useResize.tsx";
-import classes from "./SlideObject.module.css"; // Добавить импорт
+import type { ResizeDirection } from "../ResizeHandles/ResizeHandle.tsx";
+import classes from "./SlideObject.module.css";
+import type { DragItem } from "../../hooks/useDND/useDND.tsx";
 
 interface BaseObjectProps {
     element: SlideObject;
     isSelected: boolean;
     isDragging: boolean;
-    onMouseDown: (event: React.MouseEvent, element: SlideObject) => void;
-    onClick: (objId: string, event: React.MouseEvent) => void;
+    isResizing: boolean;
+    isCurrent: boolean;
+    onDrag: (e: React.MouseEvent<HTMLDivElement>, item: DragItem) => void;
+    handleObjectClick: (objId: string, event: React.MouseEvent) => void;
     onResizeStart: (
         event: React.MouseEvent,
         direction: ResizeDirection,
         element: SlideObject
     ) => void;
+    dragItem: DragItem;
     children: React.ReactNode;
-    className?: string;
     style?: React.CSSProperties;
 }
 
@@ -24,36 +26,43 @@ export const BaseObject = ({
     element,
     isSelected,
     isDragging,
-    onMouseDown,
-    onClick,
+    isResizing,
+    isCurrent,
     onResizeStart,
+    handleObjectClick,
+    onDrag,
+    dragItem,
     children,
-    className = "",
     style = {},
 }: BaseObjectProps) => {
+    const isActive = isSelected && !isDragging && !isResizing;
+
     return (
         <div
-            data-element-id={element.id}
-            className={`${className} ${isSelected ? classes.selected : ""}`} // Исправить классы
+            data-drag-id={element.id}
+            className={`${classes.slideObj} ${
+                isSelected ? classes.selected : ""
+            } ${isCurrent ? classes.current : ""}`}
             style={{
                 position: "absolute",
                 left: `${element.position.x}px`,
                 top: `${element.position.y}px`,
                 width: `${element.size.width}px`,
                 height: `${element.size.height}px`,
-                cursor: isDragging ? "grabbing" : "pointer",
+                cursor: isDragging && isSelected ? "grabbing" : "grab",
                 ...style,
             }}
-            onClick={e => onClick(element.id, e)}
-            onMouseDown={e => onMouseDown(e, element)}
-            onDragStart={e => e.preventDefault()}
+            onClick={e => handleObjectClick(element.id, e)}
+            onMouseDown={e => onDrag(e, dragItem)}
         >
             {children}
-            <ResizeHandles
-                elementId={element.id}
-                onResizeStart={onResizeStart}
-                isSelected={isSelected}
-            />
+            {isActive && (
+                <ResizeHandles
+                    elementId={element.id}
+                    onResizeStart={onResizeStart}
+                    isSelected={isSelected}
+                />
+            )}
         </div>
     );
 };

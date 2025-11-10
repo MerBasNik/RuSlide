@@ -1,31 +1,29 @@
-import React from "react";
 import type { Slide } from "../../store/types/Presentation/Slide.ts";
 import type { SlideObject } from "../../store/types/SlideObject/DefaultObject.ts";
 
 interface SlideThumbnailProps {
-    slide: Slide;
+    slide: Slide | null;
     objects: SlideObject[];
     width: number;
     height: number;
-    className?: string;
+    className: string;
 }
 
-export const SlideThumbnail: React.FC<SlideThumbnailProps> = ({
+export const SlideThumbnail = ({
     slide,
     objects,
-    width = 120,
-    height = 80,
-    className = "",
-}) => {
+    className,
+    width,
+    height,
+}: SlideThumbnailProps) => {
     const scale = width / 800;
-
     const renderBackground = () => {
-        if (slide.background.type === "color") {
+        if (slide?.background.type === "color") {
             return <rect width={width} height={height} fill={slide.background.color} />;
-        } else if (slide.background.type === "picture") {
+        } else if (slide?.background.type === "picture") {
             return (
                 <image
-                    href={slide.background.src}
+                    href={slide?.background.src}
                     width={width}
                     height={height}
                     preserveAspectRatio="xMidYMid slice"
@@ -80,7 +78,7 @@ export const SlideThumbnail: React.FC<SlideThumbnailProps> = ({
     };
 
     return (
-        <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className={className}>
+        <svg className={className}>
             {renderBackground()}
             {objects.map(object => renderObject(object))}
         </svg>

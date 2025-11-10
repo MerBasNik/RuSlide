@@ -1,27 +1,17 @@
-import { createText, setContent } from "../types/SlideObject/Text/Text.ts";
+import { createText } from "../types/SlideObject/Text/Text.ts";
 import { createImage } from "../types/SlideObject/Image.ts";
-// import { type Background, createBackgroundPicture } from "../types/Background/Background.ts";
 import {
     addSlide,
-    addSlideToSelection,
     createPresentation,
-    deleteSlide,
     type Presentation,
-    selectSlide,
+    setCurrentSlidePres,
     setPresentationName,
 } from "../types/Presentation/Presentation.ts";
 import {
     addObject,
     addObjectToSelection,
-    // addObject,
-    // addObjectToSelection,
     createSlide,
     selectObject,
-    // deleteObject,
-    // moveObjectDown,
-    // moveObjectUp,
-    // selectObject,
-    // setBackground,
     type Slide,
     type SlideObject,
 } from "../types/Presentation/Slide.ts";
@@ -38,9 +28,6 @@ import {
     type TextStyle,
 } from "../types/SlideObject/Text/TextStyle.ts";
 import {
-    setPosition,
-    setRotation,
-    setSize,
     type Size,
 } from "../types/SlideObject/DefaultObject.ts";
 import type { Position } from "../types/SlideObject/DefaultObject.ts";
@@ -60,12 +47,12 @@ export let textStyleMax: TextStyle = createTextStyle({
     decoration: "underline",
 });
 const textSize: Size = {
-    width: 100,
+    width: 300,
     height: 100,
 };
 const textPos: Position = {
-    x: 0,
-    y: 0,
+    x: 300,
+    y: 50,
 };
 export let textMax: SlideObject = createText(
     "We are learning typescript and react on course",
@@ -74,10 +61,13 @@ export let textMax: SlideObject = createText(
     textPos
 );
 export const textMax2: SlideObject = createText(
-    "We are learning typescript and react on course",
+    "ABCD",
     textStyleMax,
     textSize,
-    textPos
+    {
+        x: 50,
+        y: 200,
+    }
 );
 const imageSize: Size = {
     width: 100,
@@ -87,11 +77,17 @@ const imagePos: Position = {
     x: 0,
     y: 0,
 };
-export let picture: SlideObject = createImage("./images/test_photo.jpg", imageSize, imagePos);
-export const picture2: SlideObject = createImage("./images/test_photo.jpg", imageSize, imagePos);
-export const picture3: SlideObject = createImage("./images/test_photo.jpg", imageSize, imagePos);
+export const picture: SlideObject = createImage("./images/test_photo.jpg", imageSize, imagePos);
+export const picture2: SlideObject = createImage("./images/test_photo.jpg", imageSize, {
+    x: 100,
+    y: 100,
+});
+export const picture3: SlideObject = createImage("./images/logo3.png", imageSize, {
+    x: 200,
+    y: 200,
+});
 
-presentationMax = addSlide(presentationMax, slideMax);
+// presentationMax = addSlide(presentationMax, slideMax);
 // console.log("pres: ", presentationMax);
 // slideMax = addObject(slideMax, textMax);
 // slideMax = addObject(slideMax, picture);
@@ -101,21 +97,21 @@ presentationMax = addSlide(presentationMax, slideMax);
 // slideMax = setBackground(slideMax, backgroundPicture);
 // console.log("slide: ", slideMax);
 
-presentationMax = addSlide(presentationMax, slideMax2);
-presentationMax = addSlide(presentationMax, slideMax3);
+// presentationMax = addSlide(presentationMax, slideMax2);
+// presentationMax = addSlide(presentationMax, slideMax3);
 // console.log("pres: ", presentationMax);
 
 presentationMax = setPresentationName(presentationMax, "My presentation");
 // console.log("pres: ", presentationMax);
 
-textStyleMax = setFontSize(textStyleMax, 50);
+textStyleMax = setFontSize(textStyleMax, 20);
 textStyleMax = setFontFamily(textStyleMax, "sans-regular");
 textStyleMax = setFontStyle(textStyleMax, "italic");
 textStyleMax = setFontWeight(textStyleMax, "bold");
 textStyleMax = setLineHeight(textStyleMax, 2.5);
 textStyleMax = setColor(textStyleMax, "black");
 textStyleMax = setDecoration(textStyleMax, "underline");
-textMax = setContent(textMax, "new content 12345");
+// textMax = setContent(textMax, "new content 12345");
 textMax = setTextStyle(textMax, textStyleMax);
 // console.log("text: ", textMax);
 
@@ -128,21 +124,21 @@ textMax = setTextStyle(textMax, textStyleMax);
 // slideMax = addObjectToSelection(slideMax, textMax.id);
 // console.log("slide: ", slideMax);
 
-presentationMax = selectSlide(presentationMax, slideMax.id);
-presentationMax = addSlideToSelection(presentationMax, slideMax2.id);
+// presentationMax = selectSlide(presentationMax, slideMax.id);
+// presentationMax = addSlideToSelection(presentationMax, slideMax2.id);
 // console.log("pres: ", presentationMax);
-picture = setRotation(picture, 90);
-picture = setSize(picture, { width: 230, height: 120 });
-picture = setPosition(picture, { x: 30, y: 40 });
+// picture = setRotation(picture, 90);
+// picture = setSize(picture, { width: 230, height: 120 });
+// picture = setPosition(picture, { x: 30, y: 40 });
 // console.log("picture: ", picture);
 
 // slideMax = deleteObject(slideMax, slideMax.id);
 // console.log("slide: ", slideMax);
-presentationMax = deleteSlide(presentationMax, slideMax.id);
-presentationMax = deleteSlide(presentationMax, slideMax2.id);
+// presentationMax = deleteSlide(presentationMax, slideMax.id);
+// presentationMax = deleteSlide(presentationMax, slideMax2.id);
 // console.log("pres: ", presentationMax);
-presentationMax = addSlide(presentationMax, slideMax);
-presentationMax = addSlide(presentationMax, slideMax2);
+// presentationMax = addSlide(presentationMax, slideMax);
+// presentationMax = addSlide(presentationMax, slideMax2);
 
 function FFFF(presentation: Presentation, slideId: string, objectIds: string[]): Presentation {
     const slide = presentation.slides.get(slideId);
@@ -200,6 +196,10 @@ if (selected) {
     presentationMax = FFFF(presentationMax, slide.id, selected);
 }
 // console.log(presentationMax.slides.get(slide.id)?.objectsOrder);
+presentationMax = addSlide(presentationMax, slideMax);
+presentationMax = addSlide(presentationMax, slideMax2);
+presentationMax = addSlide(presentationMax, slideMax3);
+presentationMax = setCurrentSlidePres(presentationMax, slide.id);
 
 export const SlidesArray: Slide[] = presentationMax.slidesOrder
     .map(slideId => {

@@ -26,7 +26,7 @@
 
 .resizeHandle:hover {
     background: #0056b3;
-    transform: scale(1.2);
+    /*transform: scale(1.2);*/
 }
 
 .resize-n {
