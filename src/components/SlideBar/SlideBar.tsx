@@ -1,12 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-// import {
-//     // deleteSlide,
-//     type Presentation,
-//     // selectSlide,
-//     // setSlidesOrder,
-// } from "../../store/types/Presentation/Presentation.ts";
 import classes from "./SlideBar.module.css";
-// import { dispatch } from "../../store/StoreEditor/Editor.tsx";
 import { SlideThumbnail } from "../../UI/SlideThumbnail/SlideThumbnail.tsx";
 import { DragPreview } from "../../UI/SlideThumbnail/DragPreview.tsx";
 import { useDragAndDrop } from "../../hooks/useDND/useDND.tsx";
@@ -19,14 +12,7 @@ import {
     setSlidesOrder,
 } from "../../store/reducers/PresentationSlice.ts";
 
-// type SlideBarProps = {
-//     editor: Presentation;
-// };
-
-// const SlideBar = ({ editor }: SlideBarProps) => {
 const SlideBar = () => {
-    // const [slidesOrderPres, setSlidesOrderPres] = useState(editor.slidesOrder);
-    // const [selectedSlides, setSelectedSlides] = useState<string[]>([]);
     const [currentSlide, setCurrentSlide] = useState("");
     const selectedSlidesRef = useRef<string[]>([]);
     const widthThumbnail = 120;
@@ -34,15 +20,10 @@ const SlideBar = () => {
     const dispatch = useAppDispatch();
     const presentation = useAppSelector(state => state.presentation);
     const { slidesOrder, slides, selectedSlides } = presentation;
-    //
-    // useEffect(() => {
-    //     setSlidesOrderPres(editor.slidesOrder);
-    // }, [editor.slidesOrder]);
-
     const getSlideObjects = useCallback(
         (slideId: string) => {
-            const slide = slides.get(slideId);
-            return Array.from(slide?.objects?.values() || []);
+            const slide = slides[slideId];
+            return slide.objects;
         },
         [slides]
     );
@@ -50,17 +31,13 @@ const SlideBar = () => {
     const handleKeyDown = useCallback(
         (event: KeyboardEvent) => {
             if (event.key === "Delete" && selectedSlides.length > 0) {
-                // dispatch(deleteSlide, { editor: editor, data: [selectedSlides] });
                 dispatch(deleteSlide(selectedSlides));
-                // setSlidesOrderPres(prev => prev.filter(id => !selectedSlides.includes(id)));
-                // setSelectedSlides([]);
                 setCurrentSlide("");
             }
         },
         [dispatch, selectedSlides]
     );
 
-    //TODO паттерн стратегия
     const onDragEnd = (dragIds: string[], targetId?: string) => {
         if (!targetId) return;
         if (!dragIds.includes(targetId) && targetId !== "") {
@@ -75,10 +52,6 @@ const SlideBar = () => {
                     ...orderedDragIds,
                     ...withoutDragged.slice(targetIndex),
                 ];
-
-                // setSlidesOrderPres(newOrder);
-                // setSelectedSlides(orderedDragIds);
-                // dispatch(setSlidesOrder, { editor, data: [newOrder] });
                 dispatch(setSlidesOrder(newOrder));
             }
         }
@@ -136,24 +109,20 @@ const SlideBar = () => {
                 newSelectedSlides = [slideId];
                 setCurrentSlide(slideId);
             }
-
-            // setSelectedSlides(newSelectedSlides);
             selectedSlidesRef.current = newSelectedSlides;
-            // dispatch(selectSlide, { editor, data: [slideId] });
-            dispatch(selectSlide(slideId));
+            dispatch(selectSlide(newSelectedSlides));
         },
         [selectedSlides, dispatch, currentSlide, slidesOrder]
     );
 
     const handleSlideBarClick = useCallback((event: React.MouseEvent) => {
         if (event.target === event.currentTarget) {
-            // setSelectedSlides([]);
             setCurrentSlide("");
         }
     }, []);
 
     const renderThumbnail = (dragItem: DragItem) => {
-        const slide = slides.get(dragItem.id) || null;
+        const slide = slides[dragItem.id];
         const objects = getSlideObjects(dragItem.id);
         return (
             <>
@@ -183,7 +152,7 @@ const SlideBar = () => {
                 renderThumbnail={renderThumbnail}
             />
             {slidesOrder.map((id, index) => {
-                const slide = slides.get(id) || null;
+                const slide = slides[id];
                 const isSelected = selectedSlides.includes(id);
                 const isMultiple = selectedSlides.length > 1 && isSelected;
 

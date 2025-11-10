@@ -20,10 +20,10 @@ function createText(content: string, style: TextStyle, size: Size, position: Pos
     };
 }
 
-function setContent(text: Text, content: string): Text {
-    return { ...text, content: content };
-}
+// function setContent(text: Text, content: string): Text {
+//     return { ...text, content: content };
+// }
 
 export type { Text };
 
-export { createText, setContent };
+export { createText };

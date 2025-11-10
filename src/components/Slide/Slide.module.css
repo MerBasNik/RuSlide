@@ -10,6 +10,21 @@
     background: white;
 }
 
+.slideView.initial {
+    border: 2px dashed #d5d5d5;
+    background: rgba(230, 230, 230, 0.5);
+}
+
+.slideViewAdd {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    font-size: 30px;
+    align-items: center;
+    cursor: pointer;
+}
+
 .slideObj, .textElement {
     position: absolute;
     transition: all 0.15s ease;

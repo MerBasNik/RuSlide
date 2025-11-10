@@ -2,25 +2,17 @@ import { type DragItem, useDragAndDrop } from "../../hooks/useDND/useDND.tsx";
 import { useResize } from "../../hooks/useSlideDND/useResize.tsx";
 import { useRef, useEffect, useCallback, useState } from "react";
 import classes from "./Slide.module.css";
-// import { useSlideObjects } from "../../hooks/useSlideDND/useSlideObjects.tsx";
-// import { type Presentation } from "../../store/types/Presentation/Presentation.ts";
-// import type { Position, SlideObject } from "../../store/types/SlideObject/DefaultObject.ts";
-// import { type Slide as TSlide } from "../../store/types/Presentation/Slide.ts";
-// import { dispatch } from "../../store/StoreEditor/Editor.tsx";
 import { ImageObject } from "../../UI/SlideObjects/ImageObject.tsx";
 import { TextObject } from "../../UI/SlideObjects/TextObject.tsx";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.ts";
-import { deleteObject, setPosition } from "../../store/reducers/PresentationSlice.ts";
+import { addSlide, deleteObject, setPosition } from "../../store/reducers/PresentationSlice.ts";
 import { type Position } from "../../store/types/SlideObject/DefaultObject.ts";
+import { createSlide } from "../../store/types/Presentation/Slide.ts";
 
 type SlideProps = {
     slideId: string;
-    // editor: Presentation;
-    // slide: TSlide;
-    // objects: Array<SlideObject>;
 };
 
-// export const Slide = ({ editor, slide, objects }: SlideProps) => {
 export const Slide = ({ slideId }: SlideProps) => {
     const [selectedObjects, setSelectedObjects] = useState<string[]>([]);
     const [currentObject, setCurrentObject] = useState("");
@@ -28,25 +20,20 @@ export const Slide = ({ slideId }: SlideProps) => {
 
     const dispatch = useAppDispatch();
     const presentation = useAppSelector(state => state.presentation);
-    const slide = presentation.slides.get(slideId);
-    // const { updateObjectPosition, updateObjectSize, updateTextContent } = useSlideObjects({
-    //     presentation,
-    //     slide,
-    // });
+    const slide = presentation.slides[slideId];
     const groupBoundingBoxRef = useRef<HTMLDivElement>(null);
-    const objects = Array.from(slide?.objects?.values() || []);
+    const objects = slide?.objects;
 
     const onDragEnd = (dragIds: string[]) => {
-        const positionsMap = new Map<string, Position>();
+        const positionsMap: Record<string, Position> = {};
         dragIds.forEach((id: string) => {
             const object = document.querySelector(`[data-drag-id="${id}"]`) as HTMLElement;
             if (object !== null) {
                 const finalX = parseInt(object.style.left);
                 const finalY = parseInt(object.style.top);
-                positionsMap.set(id, { x: finalX, y: finalY });
+                positionsMap[id] = { x: finalX, y: finalY };
             }
         });
-        // updateObjectPosition(positionsMap);
         dispatch(setPosition({ slideId, positions: positionsMap }));
     };
 
@@ -159,7 +146,6 @@ export const Slide = ({ slideId }: SlideProps) => {
         const handleKeyDown = (event: KeyboardEvent) => {
             console.log(selectedObjects);
             if (event.key === "Backspace" && selectedObjects.length > 0) {
-                // dispatch(deleteObject, { editor: editor, data: [slide.id, selectedObjects] });
                 dispatch(deleteObject({ slideId, objIds: selectedObjects }));
                 setSelectedObjects([]);
                 setCurrentObject("");
@@ -171,10 +157,17 @@ export const Slide = ({ slideId }: SlideProps) => {
         };
     }, [dispatch, selectedObjects, slideId]);
 
+    const onCreateSlide = () => {
+        const slide = createSlide();
+        dispatch(addSlide(slide));
+    };
+
     return (
         <div
             ref={slideRef}
-            className={classes.slideView}
+            className={
+                slideId !== "" ? classes.slideView : `${classes.slideView} ${classes.initial}`
+            }
             style={backgroundStyle}
             onClick={handleSlideClick}
         >
@@ -185,55 +178,61 @@ export const Slide = ({ slideId }: SlideProps) => {
                     display: selectedObjects.length > 0 ? "block" : "none",
                 }}
             />
-            {objects.map(element => {
-                const isSelected = selectedObjects.includes(element.id);
-                const isCurrent = currentObject === element.id;
+            {slideId !== "" ? (
+                Object.values(objects).map(element => {
+                    const isSelected = selectedObjects.includes(element.id);
+                    const isCurrent = currentObject === element.id;
 
-                const dragItem: DragItem = {
-                    id: element.id,
-                    selectedIds: selectedObjects,
-                };
+                    const dragItem: DragItem = {
+                        id: element.id,
+                        selectedIds: selectedObjects,
+                    };
 
-                if (element.type === "image") {
-                    return (
-                        <ImageObject
-                            key={element.id}
-                            element={element}
-                            isSelected={isSelected}
-                            isDragging={isDragging}
-                            isCurrent={isCurrent}
-                            isResizing={isResizing}
-                            dragItem={dragItem}
-                            onDrag={onDrag}
-                            handleObjectClick={handleObjectClick}
-                            onResizeStart={handleResizeStart}
-                        />
-                    );
-                }
+                    if (element.type === "image") {
+                        return (
+                            <ImageObject
+                                key={element.id}
+                                element={element}
+                                isSelected={isSelected}
+                                isDragging={isDragging}
+                                isCurrent={isCurrent}
+                                isResizing={isResizing}
+                                dragItem={dragItem}
+                                onDrag={onDrag}
+                                handleObjectClick={handleObjectClick}
+                                onResizeStart={handleResizeStart}
+                            />
+                        );
+                    }
 
-                if (element.type === "text") {
-                    return (
-                        <TextObject
-                            key={element.id}
-                            slideId={slideId}
-                            element={element}
-                            isSelected={isSelected}
-                            isDragging={isDragging}
-                            isCurrent={isCurrent}
-                            isResizing={isResizing}
-                            dragItem={dragItem}
-                            onDrag={onDrag}
-                            handleObjectClick={handleObjectClick}
-                            onResizeStart={handleResizeStart}
-                            style={{
-                                fontSize: element.style.fontSize,
-                                color: element.style.color,
-                            }}
-                        />
-                    );
-                }
-                return null;
-            })}
+                    if (element.type === "text") {
+                        return (
+                            <TextObject
+                                key={element.id}
+                                slideId={slideId}
+                                element={element}
+                                isSelected={isSelected}
+                                isDragging={isDragging}
+                                isCurrent={isCurrent}
+                                isResizing={isResizing}
+                                dragItem={dragItem}
+                                onDrag={onDrag}
+                                handleObjectClick={handleObjectClick}
+                                onResizeStart={handleResizeStart}
+                                style={{
+                                    fontSize: element.style.fontSize,
+                                    color: element.style.color,
+                                }}
+                            />
+                        );
+                    }
+                    return null;
+                })
+            ) : (
+                <div onClick={onCreateSlide} className={classes.slideViewAdd}>
+                    Нажмите, чтобы добавить новый слайд
+                </div>
+            )}
         </div>
     );
 };

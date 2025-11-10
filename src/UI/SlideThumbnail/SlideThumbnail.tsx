@@ -3,7 +3,7 @@ import type { SlideObject } from "../../store/types/SlideObject/DefaultObject.ts
 
 interface SlideThumbnailProps {
     slide: Slide | null;
-    objects: SlideObject[];
+    objects: Record<string, SlideObject>;
     width: number;
     height: number;
     className: string;
@@ -80,7 +80,7 @@ export const SlideThumbnail = ({
     return (
         <svg className={className}>
             {renderBackground()}
-            {objects.map(object => renderObject(object))}
+            {Object.values(objects).map(object => renderObject(object))}
         </svg>
     );
 };

@@ -1,18 +1,18 @@
 import classes from "../TopMenu/TopMenu.module.css";
 import ToolBarButton from "./ToolBarButton.tsx";
-import { addSlide, type Presentation } from "../../store/types/Presentation/Presentation.ts";
 import { createText } from "../../store/types/SlideObject/Text/Text.ts";
-import { addObject, createSlide, setBackground } from "../../store/types/Presentation/Slide.ts";
-import { dispatch } from "../../store/StoreEditor/Editor.tsx";
 import { createTextStyle } from "../../store/types/SlideObject/Text/TextStyle.ts";
 import { createImage } from "../../store/types/SlideObject/Image.ts";
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.ts";
+import { addObject, addSlide, setBackground } from "../../store/reducers/PresentationSlice.ts";
+import { createSlide } from "../../store/types/Presentation/Slide.ts";
+import { TypeBackground } from "../../store/types/Background/Background.ts";
 
-type ToolBarListProps = {
-    editor: Presentation;
-};
-
-const ToolBarList = ({ editor }: ToolBarListProps) => {
-    const handleAddImage = () => {
+const ToolBarList = () => {
+    const dispatch = useAppDispatch();
+    const presentation = useAppSelector(state => state.presentation);
+    const { currentSlide } = presentation;
+    const handleAddImage = (slideId: string) => {
         const input = document.createElement("input");
         input.type = "file";
         input.accept = "image/*";
@@ -22,24 +22,20 @@ const ToolBarList = ({ editor }: ToolBarListProps) => {
             if (file) {
                 const imageUrl = URL.createObjectURL(file);
                 console.log(imageUrl);
-                const slideId = editor.selectedSlides[0];
                 const image = createImage(
                     imageUrl,
                     { width: 100, height: 100 },
                     { x: 100, y: 100 }
                 );
                 if (slideId) {
-                    dispatch(addObject, {
-                        editor,
-                        data: [slideId, image],
-                    });
+                    dispatch(addObject({ slideId, obj: image }));
                 }
             }
         };
 
         input.click();
     };
-    const handleAddText = () => {
+    const handleAddText = (slideId: string) => {
         const newStyles = createTextStyle({
             fontSize: 20,
             fontWeight: "bold",
@@ -50,29 +46,22 @@ const ToolBarList = ({ editor }: ToolBarListProps) => {
             decoration: "underline",
         });
         const newText = createText("Text", newStyles, { width: 200, height: 200 }, { x: 0, y: 0 });
-        dispatch(addObject, {
-            editor,
-            data: [editor.selectedSlides[0], newText],
-        });
+        dispatch(addObject({ slideId, obj: newText }));
     };
     const handleAddSlide = () => {
         const slide = createSlide();
-        console.log(editor);
-        if (editor) {
-            dispatch(addSlide, { editor, data: [slide] });
-        }
+        dispatch(addSlide(slide));
     };
-    const handleChangeBackground = () => {
+    const handleChangeBackground = (slideId: string) => {
         const colorInput = document.createElement("input");
         colorInput.type = "color";
         colorInput.value = "#ffffff";
 
         colorInput.onchange = event => {
             const color = (event.target as HTMLInputElement).value;
-            dispatch(setBackground, {
-                editor,
-                data: [editor.selectedSlides[0], { type: "color", color: color }],
-            });
+            dispatch(
+                setBackground({ slideId, background: { type: TypeBackground.Color, color: color } })
+            );
         };
         colorInput.click();
     };
@@ -80,31 +69,27 @@ const ToolBarList = ({ editor }: ToolBarListProps) => {
         <ul className={classes.toolBar}>
             <li>
                 <ToolBarButton
-                    editor={editor}
-                    clickHandle={handleAddText}
+                    clickHandle={() => handleAddText(currentSlide)}
                     nameAction={"приблизить"}
                     src={"/images/magnifier.png"}
                 />
             </li>
             <li>
                 <ToolBarButton
-                    editor={editor}
-                    clickHandle={handleAddText}
+                    clickHandle={() => handleAddText(currentSlide)}
                     nameAction={"отменить"}
                     src={"/images/undo.png"}
                 />
             </li>
             <li>
                 <ToolBarButton
-                    editor={editor}
-                    clickHandle={handleAddText}
+                    clickHandle={() => handleAddText(currentSlide)}
                     nameAction={"повторить"}
                     src={"/images/redo.png"}
                 />
             </li>
             <li>
                 <ToolBarButton
-                    editor={editor}
                     clickHandle={handleAddSlide}
                     nameAction={"добавить слайд"}
                     src={"/images/plus.png"}
@@ -112,40 +97,35 @@ const ToolBarList = ({ editor }: ToolBarListProps) => {
             </li>
             <li>
                 <ToolBarButton
-                    editor={editor}
-                    clickHandle={handleAddText}
+                    clickHandle={() => handleAddText(currentSlide)}
                     nameAction={"создать текстовое поле"}
                     src={"/images/text_icon.png"}
                 />
             </li>
             <li>
                 <ToolBarButton
-                    editor={editor}
-                    clickHandle={handleAddText}
+                    clickHandle={() => handleAddText(currentSlide)}
                     nameAction={"добавить линию"}
                     src={"/images/vector.png"}
                 />
             </li>
             <li>
                 <ToolBarButton
-                    editor={editor}
-                    clickHandle={handleAddText}
+                    clickHandle={() => handleAddText(currentSlide)}
                     nameAction={"добавить фигуру"}
                     src={"/images/geometric_symbol.png"}
                 />
             </li>
             <li>
                 <ToolBarButton
-                    editor={editor}
-                    clickHandle={handleAddImage}
+                    clickHandle={() => handleAddImage(currentSlide)}
                     nameAction={"загрузить картинку"}
                     src={"/images/image.png"}
                 />
             </li>
             <li>
                 <ToolBarButton
-                    editor={editor}
-                    clickHandle={handleChangeBackground}
+                    clickHandle={() => handleChangeBackground(currentSlide)}
                     nameAction={"изменить фон"}
                 >
                     Фон
