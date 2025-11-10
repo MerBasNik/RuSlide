@@ -2,22 +2,9 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Slide, SlideObject } from "../types/Presentation/Slide.ts";
 import type { Background } from "../types/Background/Background.ts";
 import { type Position, type Size, TypeObject } from "../types/SlideObject/DefaultObject.ts";
+import  { createPresentation, type Presentation } from "../types/Presentation/Presentation.ts";
 
-interface PresentationState {
-    name: string;
-    slides: Record<string, Slide>;
-    slidesOrder: string[];
-    selectedSlides: string[];
-    currentSlide: string;
-}
-
-const initialState: PresentationState = {
-    name: "New Presentation",
-    slides: {},
-    slidesOrder: [],
-    selectedSlides: [],
-    currentSlide: "",
-};
+const initialState: Presentation = createPresentation("New Presentation");
 
 const presentationSlice = createSlice({
     name: "presentation",

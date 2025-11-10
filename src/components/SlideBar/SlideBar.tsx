@@ -2,8 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import classes from "./SlideBar.module.css";
 import { SlideThumbnail } from "../../UI/SlideThumbnail/SlideThumbnail.tsx";
 import { DragPreview } from "../../UI/SlideThumbnail/DragPreview.tsx";
-import { useDragAndDrop } from "../../hooks/useDND/useDND.tsx";
-import type { DragItem } from "../../hooks/useDND/useDND.tsx";
+import { useDragAndDrop } from "../../hooks/useDND.tsx";
+import type { DragItem } from "../../hooks/useDND.tsx";
 import * as React from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.ts";
 import {

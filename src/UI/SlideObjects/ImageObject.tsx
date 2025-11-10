@@ -2,7 +2,7 @@ import classes from "./SlideObject.module.css";
 import { BaseObject } from "./BaseObject";
 import { type SlideObject } from "../../store/types/SlideObject/DefaultObject.ts";
 import type { ResizeDirection } from "../ResizeHandles/ResizeHandle.tsx";
-import type { DragItem } from "../../hooks/useDND/useDND.tsx";
+import type { DragItem } from "../../hooks/useDND.tsx";
 
 interface ImageObjectProps {
     element: SlideObject;

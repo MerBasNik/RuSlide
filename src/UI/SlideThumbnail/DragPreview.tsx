@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 import classes from "./SlideThumbnail.module.css";
-import type { DragItem } from "../../hooks/useDND/useDND.tsx";
+import type { DragItem } from "../../hooks/useDND.tsx";
 
 interface DragPreviewProps {
     visible: boolean;

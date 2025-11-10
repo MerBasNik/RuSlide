@@ -1,9 +1,10 @@
 import { BaseObject } from "./BaseObject";
 import { type SlideObject, TypeObject } from "../../store/types/SlideObject/DefaultObject.ts";
 import type { ResizeDirection } from "../ResizeHandles/ResizeHandle.tsx";
-import type { DragItem } from "../../hooks/useDND/useDND.tsx";
+import type { DragItem } from "../../hooks/useDND.tsx";
 import { setContent } from "../../store/reducers/PresentationSlice.ts";
 import { useAppDispatch } from "../../hooks/useRedux.ts";
+import { useEffect, useRef, useState } from "react";
 
 interface TextObjectProps {
     slideId: string;
@@ -20,7 +21,6 @@ interface TextObjectProps {
         element: SlideObject
     ) => void;
     dragItem: DragItem;
-    // onTextUpdate: (objId: string, content: string) => void;
     style?: React.CSSProperties;
 }
 
@@ -37,14 +37,23 @@ export const TextObject = ({
     onResizeStart,
     style,
 }: TextObjectProps) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const textRef = useRef<HTMLDivElement>(null);
     const dispatch = useAppDispatch();
     // const presentation = useAppSelector(state => state.presentation);
+    const content = element.type === TypeObject.Text ? element.content : "";
     const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+        setIsEditing(false);
         const newContent = e.currentTarget.textContent?.trim() || "";
-        const content = element.type == TypeObject.Text ? element.content : "";
         if (newContent !== content) {
-            // onTextUpdate(element.id, newContent);
             dispatch(setContent({ slideId: slideId, objId: element.id, content: newContent }));
+        }
+    };
+
+    const handleDoubleClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (isSelected && !isDragging && !isResizing) {
+            setIsEditing(true);
         }
     };
 
@@ -53,7 +62,30 @@ export const TextObject = ({
             e.preventDefault();
             e.currentTarget.blur();
         }
+        if (e.key === "Escape") {
+            if (textRef.current) {
+                textRef.current.textContent = content;
+            }
+            setIsEditing(false);
+        }
     };
+
+    useEffect(() => {
+        if (isEditing && textRef.current) {
+            textRef.current.focus();
+            const range = document.createRange();
+            const selection = window.getSelection();
+            if (textRef.current.firstChild) {
+                range.setStart(
+                    textRef.current.firstChild,
+                    textRef.current.firstChild.textContent?.length || 0
+                );
+                range.collapse(true);
+                selection?.removeAllRanges();
+                selection?.addRange(range);
+            }
+        }
+    }, [isEditing]);
 
     return (
         <BaseObject
@@ -67,14 +99,17 @@ export const TextObject = ({
             onResizeStart={onResizeStart}
             dragItem={dragItem}
             style={style}
+            onDoubleClick={handleDoubleClick}
         >
             <div
-                contentEditable
+                ref={textRef}
+                contentEditable={isEditing}
                 suppressContentEditableWarning
                 onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
+                onDoubleClick={handleDoubleClick}
             >
-                {element.type == TypeObject.Text ? element.content : ""}
+                {content}
             </div>
         </BaseObject>
     );

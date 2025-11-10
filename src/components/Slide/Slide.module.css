@@ -25,52 +25,6 @@
     cursor: pointer;
 }
 
-.slideObj, .textElement {
-    position: absolute;
-    transition: all 0.15s ease;
-    border: 2px solid transparent;
-    box-sizing: border-box;
-    user-select: none;
-}
-
-.slideObj.selected, .textElement.selected {
-    border: 2px solid #007bff;
-    background-color: rgba(0, 123, 255, 0.05);
-    z-index: 100;
-}
-
-.slideObj .image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    user-select: none;
-    -webkit-user-drag: none;
-    pointer-events: none;
-}
-
-.textElement {
-    white-space: pre-wrap;
-    word-break: break-word;
-    line-height: 1.4;
-    display: flex;
-    align-items: flex-start;
-    padding: 8px;
-    min-width: 50px;
-    min-height: 20px;
-    overflow: hidden;
-}
-
-.textElement:focus-within {
-    outline: none;
-    border: 2px solid #007bff;
-    background-color: rgba(0, 123, 255, 0.08);
-}
-
-.slideObj:hover:not(.selected),
-.textElement:hover:not(.selected) {
-    border: 1px solid #ccc;
-}
-
 [data-drag-id] {
     transition: all 0.2s ease;
     cursor: grab;
@@ -80,85 +34,6 @@
     border-color: #007bff;
 }
 
-[data-drag-id].drag-target {
-    border-color: #28a745 !important;
-    background: #f0fff4 !important;
-    box-shadow: 0 0 0 2px #28a745;
-}
-
-.drag-preview {
-    pointer-events: none;
-    z-index: 1000;
-    opacity: 0.8;
-    transform: rotate(5deg);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    border-radius: 8px;
-}
-
-.slide-preview {
-    background: white;
-    padding: 8px;
-    border-radius: 8px;
-    border: 2px dashed #007bff;
-}
-.text-preview, .image-preview {
-    border: 2px dashed #007bff;
-    border-radius: 4px;
-}
-
-.slideObj, .textElement {
-    position: absolute;
-    transition: all 0.15s ease;
-    border: 2px solid transparent;
-    box-sizing: border-box;
-    user-select: none;
-}
-
-.slideObj.selected, .textElement.selected {
-    border: 2px solid #007bff;
-    background-color: rgba(0, 123, 255, 0.05);
-    z-index: 100;
-}
-
-.slideObj.current, .textElement.current {
-    border: 2px solid #28a745;
-}
-
-.slideObj.multipleSelected, .textElement.multipleSelected {
-    border: 2px solid #ffc107;
-    background-color: rgba(255, 193, 7, 0.1);
-}
-
-.slideObj .image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    user-select: none;
-    -webkit-user-drag: none;
-    pointer-events: none;
-}
-
-.textElement:focus-within {
-    outline: none;
-    border: 2px solid #007bff;
-    background-color: rgba(0, 123, 255, 0.08);
-}
-
-
-
-.slideObj.selected, .textElement.selected {
-    border: 2px solid #007bff;
-    background-color: rgba(0, 123, 255, 0.05);
-    z-index: 100;
-}
-
-.slideObj.current, .textElement.current {
-    border: 2px solid #28a745;
-}
-.slideObj.inGroup, .textElement.inGroup {
-    border: none !important;
-    background-color: transparent !important;
-}
 .selectionBoundingBox {
     position: absolute;
     border: 2px dashed #007bff;

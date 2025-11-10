@@ -1,13 +1,11 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import type { SlideObject } from "../../store/types/SlideObject/DefaultObject.ts";
-import { type ResizeDirection } from "../../UI/ResizeHandles/ResizeHandle.tsx";
-// import { dispatch } from "../../store/StoreEditor/Editor.tsx";
-import { setSize } from "../../store/reducers/PresentationSlice.ts";
-import { useAppDispatch } from "../useRedux.ts";
+import type { SlideObject } from "../store/types/SlideObject/DefaultObject.ts";
+import { type ResizeDirection } from "../UI/ResizeHandles/ResizeHandle.tsx";
+import { setSize } from "../store/reducers/PresentationSlice.ts";
+import { useAppDispatch } from "./useRedux.ts";
 
 interface UseResizeProps {
     slideRef: React.RefObject<HTMLDivElement | null>;
-    // onSizeUpdate: (objId: string, width: number, height: number) => void;
 }
 
 export const useResize = ({ slideRef }: UseResizeProps) => {
@@ -25,7 +23,6 @@ export const useResize = ({ slideRef }: UseResizeProps) => {
     const resizedElementRef = useRef<HTMLElement | null>(null);
     const currentElementRef = useRef<SlideObject | null>(null);
     const dispatch = useAppDispatch();
-    // const presentation = useAppSelector(state => state.presentation);
     const handleResizeStart = useCallback(
         (event: React.MouseEvent, direction: ResizeDirection, element: SlideObject) => {
             event.preventDefault();
@@ -160,7 +157,6 @@ export const useResize = ({ slideRef }: UseResizeProps) => {
             const finalHeight = parseInt(resizedElementRef.current.style.height);
 
             if (!isNaN(finalWidth) && !isNaN(finalHeight)) {
-                // onSizeUpdate(currentElementRef.current.id, finalWidth, finalHeight);
                 dispatch(
                     setSize({
                         slideId: currentElementRef.current.id,
@@ -176,7 +172,7 @@ export const useResize = ({ slideRef }: UseResizeProps) => {
         resizeDirectionRef.current = null;
         resizedElementRef.current = null;
         currentElementRef.current = null;
-    }, [isResizing]);
+    }, [dispatch, isResizing]);
 
     useEffect(() => {
         if (isResizing) {

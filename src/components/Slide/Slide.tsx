@@ -1,5 +1,5 @@
-import { type DragItem, useDragAndDrop } from "../../hooks/useDND/useDND.tsx";
-import { useResize } from "../../hooks/useSlideDND/useResize.tsx";
+import { type DragItem, useDragAndDrop } from "../../hooks/useDND.tsx";
+import { useResize } from "../../hooks/useResize.tsx";
 import { useRef, useEffect, useCallback, useState } from "react";
 import classes from "./Slide.module.css";
 import { ImageObject } from "../../UI/SlideObjects/ImageObject.tsx";
@@ -21,6 +21,7 @@ export const Slide = ({ slideId }: SlideProps) => {
     const dispatch = useAppDispatch();
     const presentation = useAppSelector(state => state.presentation);
     const slide = presentation.slides[slideId];
+
     const groupBoundingBoxRef = useRef<HTMLDivElement>(null);
     const objects = slide?.objects;
 
@@ -144,7 +145,6 @@ export const Slide = ({ slideId }: SlideProps) => {
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
-            console.log(selectedObjects);
             if (event.key === "Backspace" && selectedObjects.length > 0) {
                 dispatch(deleteObject({ slideId, objIds: selectedObjects }));
                 setSelectedObjects([]);

@@ -2,7 +2,7 @@ import { ResizeHandles } from "../ResizeHandles/ResizeHandle.tsx";
 import type { SlideObject } from "../../store/types/SlideObject/DefaultObject.ts";
 import type { ResizeDirection } from "../ResizeHandles/ResizeHandle.tsx";
 import classes from "./SlideObject.module.css";
-import type { DragItem } from "../../hooks/useDND/useDND.tsx";
+import type { DragItem } from "../../hooks/useDND.tsx";
 
 interface BaseObjectProps {
     element: SlideObject;
@@ -20,6 +20,7 @@ interface BaseObjectProps {
     dragItem: DragItem;
     children: React.ReactNode;
     style?: React.CSSProperties;
+    onDoubleClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export const BaseObject = ({
@@ -34,6 +35,7 @@ export const BaseObject = ({
     dragItem,
     children,
     style = {},
+    onDoubleClick,
 }: BaseObjectProps) => {
     const isActive = isSelected && !isDragging && !isResizing;
 
@@ -54,6 +56,7 @@ export const BaseObject = ({
             }}
             onClick={e => handleObjectClick(element.id, e)}
             onMouseDown={e => onDrag(e, dragItem)}
+            onDoubleClick={onDoubleClick}
         >
             {children}
             {isActive && (
