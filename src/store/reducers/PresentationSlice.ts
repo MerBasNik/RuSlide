@@ -3,6 +3,7 @@ import  { createPresentation, type Presentation } from "../types/Presentation/Pr
 import {
     addSlideAction,
     deleteSlideAction,
+    restoreStateAction,
     selectSlideAction,
     setBackgroundAction,
     setCurrentSlideAction,
@@ -43,11 +44,13 @@ const presentationSlice = createSlice({
         setPosition: setPositionAction,
         setRotation: setRotationAction,
         setContent: setContentAction,
+        restoreState: restoreStateAction,
     },
 });
 
 export const {
     setPresentationName,
+    restoreState,
     addSlide,
     deleteSlide,
     selectSlide,

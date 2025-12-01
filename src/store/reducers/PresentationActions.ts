@@ -46,3 +46,8 @@ export const setBackgroundAction = (
         slide.background = { ...background };
     }
 };
+
+export const restoreStateAction = (state: Presentation, action: PayloadAction<Presentation>) => {
+    console.log("restoreStateAction", state, action);
+    return action.payload;
+}

@@ -5,20 +5,15 @@ import { DragPreview } from "../../UI/SlideThumbnail/DragPreview.tsx";
 import { useDragAndDrop } from "../../hooks/useDND.tsx";
 import type { DragItem } from "../../hooks/useDND.tsx";
 import * as React from "react";
-import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.ts";
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.tsx";
 import {
-    addSlide,
     deleteSlide,
     selectSlide,
     setCurrentSlide,
     setSlidesOrder,
 } from "../../store/reducers/PresentationSlice.ts";
 
-type SlideBarProps = {
-    push: (doFn: any, undoFn: any, ...argsToClone: any[]) => void;
-};
-
-const SlideBar = ({ push }: SlideBarProps) => {
+const SlideBar = () => {
     const selectedSlidesRef = useRef<string[]>([]);
     const widthThumbnail = 120;
     const heightThumbnail = 80;
@@ -37,30 +32,10 @@ const SlideBar = ({ push }: SlideBarProps) => {
         (event: KeyboardEvent) => {
             if (event.key === "Delete" && selectedSlides.length > 0) {
                 const slidesToDelete = [...selectedSlides];
-                const deletedSlides = slidesToDelete.map(id => structuredClone(slides[id]));
-                const oldOrder = [...slidesOrder];
-                const oldSelectedSlides = [...selectedSlides];
-                const oldCurrentSlide = currentSlide;
-
-                push(
-                    () => dispatch(deleteSlide(slidesToDelete)),
-                    () => {
-                        deletedSlides.forEach(slide => dispatch(addSlide(slide)));
-                        dispatch(setSlidesOrder(oldOrder));
-                        dispatch(selectSlide(oldSelectedSlides));
-                        if (oldCurrentSlide) {
-                            dispatch(setCurrentSlide(oldCurrentSlide));
-                        }
-                    },
-                    slidesToDelete,
-                    deletedSlides,
-                    oldOrder,
-                    oldSelectedSlides,
-                    oldCurrentSlide
-                );
+                dispatch(deleteSlide(slidesToDelete));
             }
         },
-        [dispatch, selectedSlides, slides, slidesOrder, currentSlide, push]
+        [dispatch, selectedSlides]
     );
 
     const onDragEnd = (dragIds: string[], targetId?: string) => {
@@ -77,12 +52,7 @@ const SlideBar = ({ push }: SlideBarProps) => {
                     ...orderedDragIds,
                     ...withoutDragged.slice(targetIndex),
                 ];
-                push(
-                    () => dispatch(setSlidesOrder(newOrder)),
-                    () => dispatch(setSlidesOrder(currentOrder)),
-                    newOrder,
-                    currentOrder
-                );
+                setSlidesOrder(newOrder);
             }
         }
     };

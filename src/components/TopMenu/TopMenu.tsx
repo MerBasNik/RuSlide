@@ -2,30 +2,41 @@ import classes from "./TopMenu.module.css";
 import Input from "../../UI/Input/Input.tsx";
 import ToolBarList from "../ToolBarButton/ToolBarList.tsx";
 import MenuList from "../MenuButton/MenuList.tsx";
-import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.ts";
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.tsx";
 import { setPresentationName } from "../../store/reducers/PresentationSlice.ts";
+import { undo, redo } from "../../store/reducers/historySlice.ts";
+import { selectCanUndo, selectCanRedo } from "../../store/reducers/historySlice.ts";
+import type { User } from "../../../services/appwrite/auth.ts";
 
 type TopMenuProps = {
-    push: (doFn: any, undoFn: any, ...argsToClone: any[]) => void;
-    undo: () => void;
-    redo: () => void;
-    clear: () => boolean;
-    undoAvailable: boolean;
-    redoAvailable: boolean;
+    user: User;
+    onLogout: () => void;
 };
 
-const TopMenu = ({ push, undo, redo, clear, undoAvailable, redoAvailable }: TopMenuProps) => {
+const TopMenu = ({ user, onLogout }: TopMenuProps) => {
     const dispatch = useAppDispatch();
     const presentation = useAppSelector(state => state.presentation);
+    const undoAvailable = useAppSelector(selectCanUndo);
+    const redoAvailable = useAppSelector(selectCanRedo);
+
     const { name } = presentation;
+
     const handleNameChange = (newName: string) => {
-        push(
-            () => dispatch(setPresentationName(newName)),
-            () => dispatch(setPresentationName(name)),
-            newName,
-            name
-        );
+        dispatch(setPresentationName(newName));
     };
+
+    const handleUndo = () => {
+        if (undoAvailable) {
+            dispatch(undo());
+        }
+    };
+
+    const handleRedo = () => {
+        if (redoAvailable) {
+            dispatch(redo());
+        }
+    };
+
     return (
         <header className={classes.topMenu}>
             <div className={classes.menuBar}>
@@ -39,13 +50,13 @@ const TopMenu = ({ push, undo, redo, clear, undoAvailable, redoAvailable }: TopM
                 <div onClick={() => console.log("слайд-шоу")} className={classes.slideShow}>
                     Слайд-шоу
                 </div>
+                <div onClick={onLogout}>Выйти</div>
+                {user && <div>{user.name}</div>}
             </div>
             <div className={classes.menuBlock}>
                 <ToolBarList
-                    push={push}
-                    undo={undo}
-                    redo={redo}
-                    clear={clear}
+                    undo={handleUndo}
+                    redo={handleRedo}
                     undoAvailable={undoAvailable}
                     redoAvailable={redoAvailable}
                 />

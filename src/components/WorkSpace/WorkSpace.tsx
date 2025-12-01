@@ -1,17 +1,13 @@
 import { Slide } from "../Slide/Slide.tsx";
 import classes from "./WorkSpace.module.css";
-import { useAppSelector } from "../../hooks/useRedux.ts";
+import { useAppSelector } from "../../hooks/useRedux.tsx";
 
-type WorkSpaceProps = {
-    push: (doFn: any, undoFn: any, ...argsToClone: any[]) => void;
-};
-
-const WorkSpace = ({ push }: WorkSpaceProps) => {
+const WorkSpace = () => {
     const presentation = useAppSelector(state => state.presentation);
     const { currentSlide } = presentation;
     return (
         <section className={classes.workSpace}>
-            <Slide slideId={currentSlide} push={push} />
+            <Slide slideId={currentSlide} />
         </section>
     );
 };

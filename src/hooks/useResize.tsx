@@ -2,15 +2,14 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import type { SlideObject } from "../store/types/SlideObject/DefaultObject.ts";
 import { type ResizeDirection } from "../UI/ResizeHandles/ResizeHandle.tsx";
 import { setSize } from "../store/reducers/PresentationSlice.ts";
-import { useAppDispatch } from "./useRedux.ts";
+import { useAppDispatch } from "./useRedux.tsx";
 
 interface UseResizeProps {
     slideRef: React.RefObject<HTMLDivElement | null>;
     slideId: string;
-    push: (doFn: any, undoFn: any, ...argsToClone: any[]) => void;
 }
 
-export const useResize = ({ slideRef, slideId, push }: UseResizeProps) => {
+export const useResize = ({ slideRef, slideId }: UseResizeProps) => {
     const [isResizing, setIsResizing] = useState(false);
     const resizeDirectionRef = useRef<ResizeDirection | null>(null);
     const resizeStartDataRef = useRef({
@@ -158,36 +157,13 @@ export const useResize = ({ slideRef, slideId, push }: UseResizeProps) => {
             const finalWidth = parseInt(resizedElementRef.current.style.width);
             const finalHeight = parseInt(resizedElementRef.current.style.height);
             const objId = currentElementRef.current.id;
-            const oldWidth = resizeStartDataRef.current.width;
-            const oldHeight = resizeStartDataRef.current.height;
             if (!isNaN(finalWidth) && !isNaN(finalHeight)) {
-                push(
-                    () =>
-                        dispatch(
-                            setSize({
-                                slideId: slideId,
-                                objId: objId,
-                                size: { width: finalWidth, height: finalHeight },
-                            })
-                        ),
-                    () => {
-                        dispatch(
-                            setSize({
-                                slideId: slideId,
-                                objId: objId,
-                                size: {
-                                    width: oldWidth,
-                                    height: oldHeight,
-                                },
-                            })
-                        );
-                    },
-                    slideId,
-                    objId,
-                    finalWidth,
-                    finalHeight,
-                    oldWidth,
-                    oldHeight
+                dispatch(
+                    setSize({
+                        slideId: slideId,
+                        objId: objId,
+                        size: { width: finalWidth, height: finalHeight },
+                    })
                 );
             }
             resizedElementRef.current.style.cursor = "grab";
@@ -197,7 +173,7 @@ export const useResize = ({ slideRef, slideId, push }: UseResizeProps) => {
         resizeDirectionRef.current = null;
         resizedElementRef.current = null;
         currentElementRef.current = null;
-    }, [dispatch, isResizing, push]);
+    }, [dispatch, isResizing, slideId]);
 
     useEffect(() => {
         if (isResizing) {

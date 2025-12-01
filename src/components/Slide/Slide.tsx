@@ -4,25 +4,17 @@ import { useRef, useEffect, useCallback, useState } from "react";
 import classes from "./Slide.module.css";
 import { ImageObject } from "../../UI/SlideObjects/ImageObject.tsx";
 import { TextObject } from "../../UI/SlideObjects/TextObject.tsx";
-import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.ts";
-import {
-    addObject,
-    addSlide,
-    deleteObject,
-    deleteSlide,
-    selectObject,
-    setPosition,
-} from "../../store/reducers/PresentationSlice.ts";
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.tsx";
+import { addSlide, deleteObject, setPosition } from "../../store/reducers/PresentationSlice.ts";
 import { type Position } from "../../store/types/SlideObject/DefaultObject.ts";
 import { createSlide } from "../../store/types/Presentation/Slide.ts";
 import { updateSelectionBox } from "./utils.ts";
 
 type SlideProps = {
     slideId: string;
-    push: (doFn: any, undoFn: any, ...argsToClone: any[]) => void;
 };
 
-export const Slide = ({ slideId, push }: SlideProps) => {
+export const Slide = ({ slideId }: SlideProps) => {
     const [selectedObjects, setSelectedObjects] = useState<string[]>([]);
     const [currentObject, setCurrentObject] = useState("");
     const slideRef = useRef<HTMLDivElement>(null);
@@ -51,18 +43,7 @@ export const Slide = ({ slideId, push }: SlideProps) => {
             }
         });
 
-        push(
-            () => dispatch(setPosition({ slideId, positions: positionsMap })),
-            () => {
-                dispatch(setPosition({ slideId, positions: oldPositions }));
-                dispatch(selectObject({ slideId, objectIds: [] }));
-                setSelectedObjects([]);
-                console.log("oldPositions", oldPositions);
-            },
-            slideId,
-            positionsMap,
-            oldPositions
-        );
+        dispatch(setPosition({ slideId, positions: positionsMap }));
     };
 
     const updateSelectionBoundingBox = updateSelectionBox(
@@ -77,7 +58,7 @@ export const Slide = ({ slideId, push }: SlideProps) => {
         containerRef: slideRef,
     });
 
-    const { isResizing, handleResizeStart } = useResize({ slideRef, slideId, push });
+    const { isResizing, handleResizeStart } = useResize({ slideRef, slideId });
 
     const backgroundStyle: React.CSSProperties = {};
     if (slide?.background.type === "color") {
@@ -146,40 +127,20 @@ export const Slide = ({ slideId, push }: SlideProps) => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === "Backspace" && selectedObjects.length > 0) {
                 const objectsToDelete = [...selectedObjects];
-                const deletedObjects = objectsToDelete.map(id => objects?.[id]).filter(Boolean);
-                push(
-                    () => {
-                        dispatch(deleteObject({ slideId, objIds: objectsToDelete }));
-                        setSelectedObjects([]);
-                        setCurrentObject("");
-                    },
-                    () => {
-                        selectedObjects.map(objId => {
-                            const obj = objects[objId];
-                            dispatch(addObject({ slideId, obj }));
-                        });
-                        setSelectedObjects(objectsToDelete);
-                        setCurrentObject(objectsToDelete[0] || "");
-                    },
-                    slideId,
-                    objectsToDelete,
-                    deletedObjects
-                );
+                dispatch(deleteObject({ slideId, objIds: objectsToDelete }));
+                setSelectedObjects([]);
+                setCurrentObject("");
             }
         };
         document.addEventListener("keydown", handleKeyDown);
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, [dispatch, objects, push, selectedObjects, slideId]);
+    }, [dispatch, objects, selectedObjects, slideId]);
 
     const onCreateSlide = () => {
         const slide = createSlide();
-        push(
-            () => dispatch(addSlide(slide)),
-            () => dispatch(deleteSlide([slide.id])),
-            slide
-        );
+        dispatch(addSlide(slide));
     };
 
     return (
@@ -241,7 +202,6 @@ export const Slide = ({ slideId, push }: SlideProps) => {
                                     fontSize: element.style.fontSize,
                                     color: element.style.color,
                                 }}
-                                push={push}
                             />
                         );
                     }

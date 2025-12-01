@@ -3,7 +3,7 @@ import { type SlideObject, TypeObject } from "../../store/types/SlideObject/Defa
 import type { ResizeDirection } from "../ResizeHandles/ResizeHandle.tsx";
 import type { DragItem } from "../../hooks/useDND.tsx";
 import { setContent } from "../../store/reducers/PresentationSlice.ts";
-import { useAppDispatch } from "../../hooks/useRedux.ts";
+import { useAppDispatch } from "../../hooks/useRedux.tsx";
 import { useEffect, useRef, useState } from "react";
 
 interface TextObjectProps {
@@ -21,7 +21,6 @@ interface TextObjectProps {
     ) => void;
     dragItem: DragItem;
     style?: React.CSSProperties;
-    push: (doFn: any, undoFn: any, ...argsToClone: any[]) => void;
 }
 
 export const TextObject = ({
@@ -35,7 +34,6 @@ export const TextObject = ({
     dragItem,
     onResizeStart,
     style,
-    push,
 }: TextObjectProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const textRef = useRef<HTMLDivElement>(null);
@@ -44,21 +42,8 @@ export const TextObject = ({
     const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
         setIsEditing(false);
         const newContent = e.currentTarget.textContent?.trim() || "";
-        const oldContent = content;
         if (newContent !== content) {
-            push(
-                () =>
-                    dispatch(
-                        setContent({ slideId: slideId, objId: element.id, content: newContent })
-                    ),
-                () =>
-                    dispatch(
-                        setContent({ slideId: slideId, objId: element.id, content: oldContent })
-                    ),
-                slideId,
-                newContent,
-                oldContent
-            );
+            dispatch(setContent({ slideId: slideId, objId: element.id, content: newContent }));
         }
     };
 

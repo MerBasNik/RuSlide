@@ -3,27 +3,19 @@ import ToolBarButton from "./ToolBarButton.tsx";
 import { createText } from "../../store/types/SlideObject/Text/Text.ts";
 import { createTextStyle } from "../../store/types/SlideObject/Text/TextStyle.ts";
 import { createImage } from "../../store/types/SlideObject/Image.ts";
-import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.ts";
-import {
-    addObject,
-    addSlide,
-    deleteObject,
-    deleteSlide,
-    setBackground,
-} from "../../store/reducers/PresentationSlice.ts";
+import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.tsx";
+import { addObject, addSlide, setBackground } from "../../store/reducers/PresentationSlice.ts";
 import { createSlide } from "../../store/types/Presentation/Slide.ts";
 import { TypeBackground } from "../../store/types/Background/Background.ts";
 
 type ToolBarListProps = {
-    push: (doFn: any, undoFn: any, ...argsToClone: any[]) => void;
     undo: () => void;
     redo: () => void;
-    clear: () => boolean;
     undoAvailable: boolean;
     redoAvailable: boolean;
 };
 
-const ToolBarList = ({ push, undo, redo, undoAvailable, redoAvailable }: ToolBarListProps) => {
+const ToolBarList = ({ undo, redo, undoAvailable, redoAvailable }: ToolBarListProps) => {
     const dispatch = useAppDispatch();
     const presentation = useAppSelector(state => state.presentation);
     const { currentSlide } = presentation;
@@ -44,18 +36,15 @@ const ToolBarList = ({ push, undo, redo, undoAvailable, redoAvailable }: ToolBar
                     { x: 100, y: 100 }
                 );
                 if (slideId) {
-                    push(
-                        () => dispatch(addObject({ slideId, obj: image })),
-                        () => dispatch(deleteObject({ slideId, objIds: [image.id] })),
-                        slideId,
-                        image
-                    );
+                    // Теперь просто диспатчим действие - история сохранится автоматически
+                    dispatch(addObject({ slideId, obj: image }));
                 }
             }
         };
 
         input.click();
     };
+
     const handleAddText = (slideId: string) => {
         const newStyles = createTextStyle({
             fontSize: 20,
@@ -67,21 +56,17 @@ const ToolBarList = ({ push, undo, redo, undoAvailable, redoAvailable }: ToolBar
             decoration: "underline",
         });
         const newText = createText("Text", newStyles, { width: 200, height: 200 }, { x: 0, y: 0 });
-        push(
-            () => dispatch(addObject({ slideId, obj: newText })),
-            () => dispatch(deleteObject({ slideId, objIds: [newText.id] })),
-            slideId,
-            newText
-        );
+
+        // Просто диспатчим действие
+        dispatch(addObject({ slideId, obj: newText }));
     };
+
     const handleAddSlide = () => {
         const slide = createSlide();
-        push(
-            () => dispatch(addSlide(slide)),
-            () => dispatch(deleteSlide([slide.id])),
-            slide
-        );
+        // Просто диспатчим действие
+        dispatch(addSlide(slide));
     };
+
     const handleChangeBackground = (slideId: string) => {
         const colorInput = document.createElement("input");
         colorInput.type = "color";
@@ -89,20 +74,13 @@ const ToolBarList = ({ push, undo, redo, undoAvailable, redoAvailable }: ToolBar
 
         colorInput.onchange = event => {
             const color = (event.target as HTMLInputElement).value;
-            const slide = presentation.slides[slideId];
-            const oldBackground = slide?.background;
-            push(
-                () =>
-                    dispatch(
-                        setBackground({
-                            slideId,
-                            background: { type: TypeBackground.Color, color: color },
-                        })
-                    ),
-                () => dispatch(setBackground({ slideId, background: oldBackground })),
-                slideId,
-                color,
-                oldBackground
+
+            // Просто диспатчим действие
+            dispatch(
+                setBackground({
+                    slideId,
+                    background: { type: TypeBackground.Color, color: color },
+                })
             );
         };
         colorInput.click();
@@ -111,6 +89,7 @@ const ToolBarList = ({ push, undo, redo, undoAvailable, redoAvailable }: ToolBar
     const UndoAction = () => {
         if (undoAvailable) undo();
     };
+
     const RedoAction = () => {
         if (redoAvailable) redo();
     };
