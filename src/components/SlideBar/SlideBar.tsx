@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import classes from "./SlideBar.module.css";
 import { SlideThumbnail } from "../../UI/SlideThumbnail/SlideThumbnail.tsx";
 import { DragPreview } from "../../UI/SlideThumbnail/DragPreview.tsx";
@@ -7,19 +7,24 @@ import type { DragItem } from "../../hooks/useDND.tsx";
 import * as React from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.ts";
 import {
+    addSlide,
     deleteSlide,
     selectSlide,
+    setCurrentSlide,
     setSlidesOrder,
 } from "../../store/reducers/PresentationSlice.ts";
 
-const SlideBar = () => {
-    const [currentSlide, setCurrentSlide] = useState("");
+type SlideBarProps = {
+    push: (doFn: any, undoFn: any, ...argsToClone: any[]) => void;
+};
+
+const SlideBar = ({ push }: SlideBarProps) => {
     const selectedSlidesRef = useRef<string[]>([]);
     const widthThumbnail = 120;
     const heightThumbnail = 80;
     const dispatch = useAppDispatch();
     const presentation = useAppSelector(state => state.presentation);
-    const { slidesOrder, slides, selectedSlides } = presentation;
+    const { slidesOrder, slides, selectedSlides, currentSlide } = presentation;
     const getSlideObjects = useCallback(
         (slideId: string) => {
             const slide = slides[slideId];
@@ -31,11 +36,31 @@ const SlideBar = () => {
     const handleKeyDown = useCallback(
         (event: KeyboardEvent) => {
             if (event.key === "Delete" && selectedSlides.length > 0) {
-                dispatch(deleteSlide(selectedSlides));
-                setCurrentSlide("");
+                const slidesToDelete = [...selectedSlides];
+                const deletedSlides = slidesToDelete.map(id => structuredClone(slides[id]));
+                const oldOrder = [...slidesOrder];
+                const oldSelectedSlides = [...selectedSlides];
+                const oldCurrentSlide = currentSlide;
+
+                push(
+                    () => dispatch(deleteSlide(slidesToDelete)),
+                    () => {
+                        deletedSlides.forEach(slide => dispatch(addSlide(slide)));
+                        dispatch(setSlidesOrder(oldOrder));
+                        dispatch(selectSlide(oldSelectedSlides));
+                        if (oldCurrentSlide) {
+                            dispatch(setCurrentSlide(oldCurrentSlide));
+                        }
+                    },
+                    slidesToDelete,
+                    deletedSlides,
+                    oldOrder,
+                    oldSelectedSlides,
+                    oldCurrentSlide
+                );
             }
         },
-        [dispatch, selectedSlides]
+        [dispatch, selectedSlides, slides, slidesOrder, currentSlide, push]
     );
 
     const onDragEnd = (dragIds: string[], targetId?: string) => {
@@ -52,7 +77,12 @@ const SlideBar = () => {
                     ...orderedDragIds,
                     ...withoutDragged.slice(targetIndex),
                 ];
-                dispatch(setSlidesOrder(newOrder));
+                push(
+                    () => dispatch(setSlidesOrder(newOrder)),
+                    () => dispatch(setSlidesOrder(currentOrder)),
+                    newOrder,
+                    currentOrder
+                );
             }
         }
     };
@@ -72,9 +102,7 @@ const SlideBar = () => {
     const handleSlideClick = useCallback(
         (slideId: string, event: React.MouseEvent) => {
             event.stopPropagation();
-
             let newSelectedSlides: string[] = [];
-
             if (event.metaKey) {
                 if (selectedSlides.includes(slideId)) {
                     newSelectedSlides = selectedSlides.filter(id => id !== slideId);
@@ -83,13 +111,13 @@ const SlideBar = () => {
                         const newCurrentSlide =
                             newSelectedSlides[Math.max(0, removedIndex - 1)] ||
                             newSelectedSlides[0];
-                        setCurrentSlide(newCurrentSlide);
+                        dispatch(setCurrentSlide(newCurrentSlide));
                     } else if (newSelectedSlides.length === 0) {
-                        setCurrentSlide("");
+                        dispatch(setCurrentSlide(""));
                     }
                 } else {
                     newSelectedSlides = [...selectedSlides, slideId];
-                    setCurrentSlide(slideId);
+                    dispatch(setCurrentSlide(slideId));
                 }
             } else if (event.shiftKey && selectedSlides.length > 0) {
                 const lastSelectedIndex = slidesOrder.indexOf(
@@ -103,23 +131,29 @@ const SlideBar = () => {
                     const rangeSelection = slidesOrder.slice(start, end + 1);
 
                     newSelectedSlides = Array.from(new Set([...selectedSlides, ...rangeSelection]));
-                    setCurrentSlide(slideId);
+                    dispatch(setCurrentSlide(slideId));
                 }
             } else {
                 newSelectedSlides = [slideId];
-                setCurrentSlide(slideId);
+                dispatch(setCurrentSlide(slideId));
             }
+
             selectedSlidesRef.current = newSelectedSlides;
             dispatch(selectSlide(newSelectedSlides));
+            dispatch(setCurrentSlide(newSelectedSlides[0]));
         },
-        [selectedSlides, dispatch, currentSlide, slidesOrder]
+        [selectedSlides, currentSlide, dispatch, slidesOrder]
     );
 
-    const handleSlideBarClick = useCallback((event: React.MouseEvent) => {
-        if (event.target === event.currentTarget) {
-            setCurrentSlide("");
-        }
-    }, []);
+    const handleSlideBarClick = useCallback(
+        (event: React.MouseEvent) => {
+            if (event.target === event.currentTarget) {
+                dispatch(selectSlide([]));
+                dispatch(setCurrentSlide(""));
+            }
+        },
+        [dispatch]
+    );
 
     const renderThumbnail = (dragItem: DragItem) => {
         const slide = slides[dragItem.id];

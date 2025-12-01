@@ -8,7 +8,6 @@ interface BaseObjectProps {
     element: SlideObject;
     isSelected: boolean;
     isDragging: boolean;
-    isResizing: boolean;
     isCurrent: boolean;
     onDrag: (e: React.MouseEvent<HTMLDivElement>, item: DragItem) => void;
     handleObjectClick: (objId: string, event: React.MouseEvent) => void;
@@ -20,14 +19,12 @@ interface BaseObjectProps {
     dragItem: DragItem;
     children: React.ReactNode;
     style?: React.CSSProperties;
-    onDoubleClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export const BaseObject = ({
     element,
     isSelected,
     isDragging,
-    isResizing,
     isCurrent,
     onResizeStart,
     handleObjectClick,
@@ -35,9 +32,8 @@ export const BaseObject = ({
     dragItem,
     children,
     style = {},
-    onDoubleClick,
 }: BaseObjectProps) => {
-    const isActive = isSelected && !isDragging && !isResizing;
+    const isActive = isSelected && !isDragging;
 
     return (
         <div
@@ -56,7 +52,6 @@ export const BaseObject = ({
             }}
             onClick={e => handleObjectClick(element.id, e)}
             onMouseDown={e => onDrag(e, dragItem)}
-            onDoubleClick={onDoubleClick}
         >
             {children}
             {isActive && (

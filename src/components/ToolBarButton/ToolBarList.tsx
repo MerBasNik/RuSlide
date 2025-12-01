@@ -4,14 +4,30 @@ import { createText } from "../../store/types/SlideObject/Text/Text.ts";
 import { createTextStyle } from "../../store/types/SlideObject/Text/TextStyle.ts";
 import { createImage } from "../../store/types/SlideObject/Image.ts";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.ts";
-import { addObject, addSlide, setBackground } from "../../store/reducers/PresentationSlice.ts";
+import {
+    addObject,
+    addSlide,
+    deleteObject,
+    deleteSlide,
+    setBackground,
+} from "../../store/reducers/PresentationSlice.ts";
 import { createSlide } from "../../store/types/Presentation/Slide.ts";
 import { TypeBackground } from "../../store/types/Background/Background.ts";
 
-const ToolBarList = () => {
+type ToolBarListProps = {
+    push: (doFn: any, undoFn: any, ...argsToClone: any[]) => void;
+    undo: () => void;
+    redo: () => void;
+    clear: () => boolean;
+    undoAvailable: boolean;
+    redoAvailable: boolean;
+};
+
+const ToolBarList = ({ push, undo, redo, undoAvailable, redoAvailable }: ToolBarListProps) => {
     const dispatch = useAppDispatch();
     const presentation = useAppSelector(state => state.presentation);
     const { currentSlide } = presentation;
+
     const handleAddImage = (slideId: string) => {
         const input = document.createElement("input");
         input.type = "file";
@@ -28,7 +44,12 @@ const ToolBarList = () => {
                     { x: 100, y: 100 }
                 );
                 if (slideId) {
-                    dispatch(addObject({ slideId, obj: image }));
+                    push(
+                        () => dispatch(addObject({ slideId, obj: image })),
+                        () => dispatch(deleteObject({ slideId, objIds: [image.id] })),
+                        slideId,
+                        image
+                    );
                 }
             }
         };
@@ -46,11 +67,20 @@ const ToolBarList = () => {
             decoration: "underline",
         });
         const newText = createText("Text", newStyles, { width: 200, height: 200 }, { x: 0, y: 0 });
-        dispatch(addObject({ slideId, obj: newText }));
+        push(
+            () => dispatch(addObject({ slideId, obj: newText })),
+            () => dispatch(deleteObject({ slideId, objIds: [newText.id] })),
+            slideId,
+            newText
+        );
     };
     const handleAddSlide = () => {
         const slide = createSlide();
-        dispatch(addSlide(slide));
+        push(
+            () => dispatch(addSlide(slide)),
+            () => dispatch(deleteSlide([slide.id])),
+            slide
+        );
     };
     const handleChangeBackground = (slideId: string) => {
         const colorInput = document.createElement("input");
@@ -59,12 +89,32 @@ const ToolBarList = () => {
 
         colorInput.onchange = event => {
             const color = (event.target as HTMLInputElement).value;
-            dispatch(
-                setBackground({ slideId, background: { type: TypeBackground.Color, color: color } })
+            const slide = presentation.slides[slideId];
+            const oldBackground = slide?.background;
+            push(
+                () =>
+                    dispatch(
+                        setBackground({
+                            slideId,
+                            background: { type: TypeBackground.Color, color: color },
+                        })
+                    ),
+                () => dispatch(setBackground({ slideId, background: oldBackground })),
+                slideId,
+                color,
+                oldBackground
             );
         };
         colorInput.click();
     };
+
+    const UndoAction = () => {
+        if (undoAvailable) undo();
+    };
+    const RedoAction = () => {
+        if (redoAvailable) redo();
+    };
+
     return (
         <ul className={classes.toolBar}>
             <li>
@@ -76,14 +126,14 @@ const ToolBarList = () => {
             </li>
             <li>
                 <ToolBarButton
-                    clickHandle={() => handleAddText(currentSlide)}
+                    clickHandle={UndoAction}
                     nameAction={"отменить"}
                     src={"/images/undo.png"}
                 />
             </li>
             <li>
                 <ToolBarButton
-                    clickHandle={() => handleAddText(currentSlide)}
+                    clickHandle={RedoAction}
                     nameAction={"повторить"}
                     src={"/images/redo.png"}
                 />

@@ -2,11 +2,15 @@ import SlideBar from "../SlideBar/SlideBar.tsx";
 import classes from "./EditorContainer.module.css";
 import WorkSpace from "../WorkSpace/WorkSpace.tsx";
 
-const EditorContainer = () => {
+type EditorContainerProps = {
+    push: (doFn: any, undoFn: any, ...argsToClone: any[]) => void;
+};
+
+const EditorContainer = ({ push }: EditorContainerProps) => {
     return (
         <main className={classes.editorContainer}>
-            <SlideBar />
-            <WorkSpace />
+            <SlideBar push={push} />
+            <WorkSpace push={push} />
         </main>
     );
 };

@@ -9,7 +9,6 @@ interface ImageObjectProps {
     isSelected: boolean;
     isDragging: boolean;
     isCurrent: boolean;
-    isResizing: boolean;
     dragItem: DragItem;
     onDrag: (e: React.MouseEvent<HTMLDivElement>, item: DragItem) => void;
     handleObjectClick: (objId: string, event: React.MouseEvent) => void;
@@ -25,7 +24,6 @@ export const ImageObject = ({
     element,
     isSelected,
     isDragging,
-    isResizing,
     isCurrent,
     handleObjectClick,
     onDrag,
@@ -38,7 +36,6 @@ export const ImageObject = ({
             element={element}
             isSelected={isSelected}
             isDragging={isDragging}
-            isResizing={isResizing}
             isCurrent={isCurrent}
             onDrag={onDrag}
             handleObjectClick={handleObjectClick}

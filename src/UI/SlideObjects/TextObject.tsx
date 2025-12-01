@@ -12,7 +12,6 @@ interface TextObjectProps {
     isSelected: boolean;
     isDragging: boolean;
     isCurrent: boolean;
-    isResizing: boolean;
     onDrag: (e: React.MouseEvent<HTMLDivElement>, item: DragItem) => void;
     handleObjectClick: (objId: string, event: React.MouseEvent) => void;
     onResizeStart: (
@@ -22,6 +21,7 @@ interface TextObjectProps {
     ) => void;
     dragItem: DragItem;
     style?: React.CSSProperties;
+    push: (doFn: any, undoFn: any, ...argsToClone: any[]) => void;
 }
 
 export const TextObject = ({
@@ -29,30 +29,42 @@ export const TextObject = ({
     element,
     isSelected,
     isDragging,
-    isResizing,
     isCurrent,
     handleObjectClick,
     onDrag,
     dragItem,
     onResizeStart,
     style,
+    push,
 }: TextObjectProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const textRef = useRef<HTMLDivElement>(null);
     const dispatch = useAppDispatch();
-    // const presentation = useAppSelector(state => state.presentation);
     const content = element.type === TypeObject.Text ? element.content : "";
     const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
         setIsEditing(false);
         const newContent = e.currentTarget.textContent?.trim() || "";
+        const oldContent = content;
         if (newContent !== content) {
-            dispatch(setContent({ slideId: slideId, objId: element.id, content: newContent }));
+            push(
+                () =>
+                    dispatch(
+                        setContent({ slideId: slideId, objId: element.id, content: newContent })
+                    ),
+                () =>
+                    dispatch(
+                        setContent({ slideId: slideId, objId: element.id, content: oldContent })
+                    ),
+                slideId,
+                newContent,
+                oldContent
+            );
         }
     };
 
     const handleDoubleClick = (e: React.MouseEvent) => {
         e.stopPropagation();
-        if (isSelected && !isDragging && !isResizing) {
+        if (isSelected && !isDragging) {
             setIsEditing(true);
         }
     };
@@ -92,14 +104,12 @@ export const TextObject = ({
             element={element}
             isSelected={isSelected}
             isDragging={isDragging}
-            isResizing={isResizing}
             isCurrent={isCurrent}
             handleObjectClick={handleObjectClick}
             onDrag={onDrag}
             onResizeStart={onResizeStart}
             dragItem={dragItem}
             style={style}
-            onDoubleClick={handleDoubleClick}
         >
             <div
                 ref={textRef}

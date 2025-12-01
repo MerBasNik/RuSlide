@@ -5,38 +5,71 @@ import classes from "./Slide.module.css";
 import { ImageObject } from "../../UI/SlideObjects/ImageObject.tsx";
 import { TextObject } from "../../UI/SlideObjects/TextObject.tsx";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.ts";
-import { addSlide, deleteObject, setPosition } from "../../store/reducers/PresentationSlice.ts";
+import {
+    addObject,
+    addSlide,
+    deleteObject,
+    deleteSlide,
+    selectObject,
+    setPosition,
+} from "../../store/reducers/PresentationSlice.ts";
 import { type Position } from "../../store/types/SlideObject/DefaultObject.ts";
 import { createSlide } from "../../store/types/Presentation/Slide.ts";
+import { updateSelectionBox } from "./utils.ts";
 
 type SlideProps = {
     slideId: string;
+    push: (doFn: any, undoFn: any, ...argsToClone: any[]) => void;
 };
 
-export const Slide = ({ slideId }: SlideProps) => {
+export const Slide = ({ slideId, push }: SlideProps) => {
     const [selectedObjects, setSelectedObjects] = useState<string[]>([]);
     const [currentObject, setCurrentObject] = useState("");
     const slideRef = useRef<HTMLDivElement>(null);
+    const groupBoundingBoxRef = useRef<HTMLDivElement>(null);
 
     const dispatch = useAppDispatch();
     const presentation = useAppSelector(state => state.presentation);
     const slide = presentation.slides[slideId];
 
-    const groupBoundingBoxRef = useRef<HTMLDivElement>(null);
     const objects = slide?.objects;
 
     const onDragEnd = (dragIds: string[]) => {
         const positionsMap: Record<string, Position> = {};
+        const oldPositions: Record<string, Position> = {};
+
         dragIds.forEach((id: string) => {
             const object = document.querySelector(`[data-drag-id="${id}"]`) as HTMLElement;
             if (object !== null) {
                 const finalX = parseInt(object.style.left);
                 const finalY = parseInt(object.style.top);
                 positionsMap[id] = { x: finalX, y: finalY };
+                const oldObject = objects?.[id];
+                if (oldObject) {
+                    oldPositions[id] = { x: oldObject.position.x, y: oldObject.position.y };
+                }
             }
         });
-        dispatch(setPosition({ slideId, positions: positionsMap }));
+
+        push(
+            () => dispatch(setPosition({ slideId, positions: positionsMap })),
+            () => {
+                dispatch(setPosition({ slideId, positions: oldPositions }));
+                dispatch(selectObject({ slideId, objectIds: [] }));
+                setSelectedObjects([]);
+                console.log("oldPositions", oldPositions);
+            },
+            slideId,
+            positionsMap,
+            oldPositions
+        );
     };
+
+    const updateSelectionBoundingBox = updateSelectionBox(
+        groupBoundingBoxRef,
+        selectedObjects,
+        slideRef
+    );
 
     const { onDrag, isDragging } = useDragAndDrop({
         typeDND: "objects",
@@ -44,7 +77,7 @@ export const Slide = ({ slideId }: SlideProps) => {
         containerRef: slideRef,
     });
 
-    const { isResizing, handleResizeStart } = useResize({ slideRef });
+    const { isResizing, handleResizeStart } = useResize({ slideRef, slideId, push });
 
     const backgroundStyle: React.CSSProperties = {};
     if (slide?.background.type === "color") {
@@ -57,30 +90,31 @@ export const Slide = ({ slideId }: SlideProps) => {
 
     const handleObjectClick = useCallback(
         (elementId: string, event: React.MouseEvent) => {
-            event.stopPropagation();
-            if (event.metaKey || event.ctrlKey) {
-                setSelectedObjects(prev => {
-                    const isSelected = prev.includes(elementId);
-                    const newSelected = isSelected
-                        ? prev.filter(id => id !== elementId)
-                        : [...prev, elementId];
+            let newSelectedObjects: string[] = [];
+            let newCurrentObject = currentObject;
 
-                    if (isSelected && elementId === currentObject) {
-                        setCurrentObject(newSelected.length > 0 ? newSelected[0] : "");
-                    } else if (!isSelected) {
-                        setCurrentObject(elementId);
-                    }
-                    return newSelected;
-                });
+            if (event.metaKey || event.ctrlKey) {
+                const isSelected = selectedObjects.includes(elementId);
+                newSelectedObjects = isSelected
+                    ? selectedObjects.filter(id => id !== elementId)
+                    : [...selectedObjects, elementId];
+
+                if (isSelected && elementId === currentObject) {
+                    newCurrentObject = newSelectedObjects.length > 0 ? newSelectedObjects[0] : "";
+                } else if (!isSelected) {
+                    newCurrentObject = elementId;
+                }
             } else if (event.shiftKey && selectedObjects.length > 0) {
                 if (!selectedObjects.includes(elementId)) {
-                    setSelectedObjects(prev => [...prev, elementId]);
-                    setCurrentObject(elementId);
+                    newSelectedObjects = [...selectedObjects, elementId];
+                    newCurrentObject = elementId;
                 }
             } else {
-                setSelectedObjects([elementId]);
-                setCurrentObject(elementId);
+                newSelectedObjects = [elementId];
+                newCurrentObject = elementId;
             }
+            setSelectedObjects(newSelectedObjects);
+            setCurrentObject(newCurrentObject);
         },
         [selectedObjects, currentObject]
     );
@@ -91,41 +125,6 @@ export const Slide = ({ slideId }: SlideProps) => {
             setCurrentObject("");
         }
     };
-
-    const updateSelectionBoundingBox = useCallback(() => {
-        if (!groupBoundingBoxRef.current || selectedObjects.length === 0) return;
-
-        let minX = Infinity,
-            minY = Infinity,
-            maxX = -Infinity,
-            maxY = -Infinity;
-        let hasElements = false;
-
-        selectedObjects.forEach((id: string) => {
-            const element = document.querySelector(`[data-drag-id="${id}"]`) as HTMLElement;
-            if (element !== null) {
-                const rect = element.getBoundingClientRect();
-                if (slideRef.current) {
-                    const containerRect = slideRef.current.getBoundingClientRect();
-                    const x = rect.left - containerRect.left;
-                    const y = rect.top - containerRect.top;
-                    minX = Math.min(minX, x);
-                    minY = Math.min(minY, y);
-                    maxX = Math.max(maxX, x + element.offsetWidth);
-                    maxY = Math.max(maxY, y + element.offsetHeight);
-                    hasElements = true;
-                }
-            }
-        });
-
-        if (hasElements && groupBoundingBoxRef.current) {
-            groupBoundingBoxRef.current.style.left = `${minX}px`;
-            groupBoundingBoxRef.current.style.top = `${minY}px`;
-            groupBoundingBoxRef.current.style.width = `${maxX - minX}px`;
-            groupBoundingBoxRef.current.style.height = `${maxY - minY}px`;
-            groupBoundingBoxRef.current.style.display = "block";
-        }
-    }, [selectedObjects]);
 
     useEffect(() => {
         if (selectedObjects.length > 0) {
@@ -138,7 +137,7 @@ export const Slide = ({ slideId }: SlideProps) => {
     useEffect(() => {
         if (isDragging || isResizing) {
             updateSelectionBoundingBox();
-            const interval = setInterval(updateSelectionBoundingBox, 16);
+            const interval = setInterval(updateSelectionBoundingBox, 5);
             return () => clearInterval(interval);
         }
     }, [isDragging, isResizing, updateSelectionBoundingBox]);
@@ -146,20 +145,41 @@ export const Slide = ({ slideId }: SlideProps) => {
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === "Backspace" && selectedObjects.length > 0) {
-                dispatch(deleteObject({ slideId, objIds: selectedObjects }));
-                setSelectedObjects([]);
-                setCurrentObject("");
+                const objectsToDelete = [...selectedObjects];
+                const deletedObjects = objectsToDelete.map(id => objects?.[id]).filter(Boolean);
+                push(
+                    () => {
+                        dispatch(deleteObject({ slideId, objIds: objectsToDelete }));
+                        setSelectedObjects([]);
+                        setCurrentObject("");
+                    },
+                    () => {
+                        selectedObjects.map(objId => {
+                            const obj = objects[objId];
+                            dispatch(addObject({ slideId, obj }));
+                        });
+                        setSelectedObjects(objectsToDelete);
+                        setCurrentObject(objectsToDelete[0] || "");
+                    },
+                    slideId,
+                    objectsToDelete,
+                    deletedObjects
+                );
             }
         };
         document.addEventListener("keydown", handleKeyDown);
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, [dispatch, selectedObjects, slideId]);
+    }, [dispatch, objects, push, selectedObjects, slideId]);
 
     const onCreateSlide = () => {
         const slide = createSlide();
-        dispatch(addSlide(slide));
+        push(
+            () => dispatch(addSlide(slide)),
+            () => dispatch(deleteSlide([slide.id])),
+            slide
+        );
     };
 
     return (
@@ -196,7 +216,6 @@ export const Slide = ({ slideId }: SlideProps) => {
                                 isSelected={isSelected}
                                 isDragging={isDragging}
                                 isCurrent={isCurrent}
-                                isResizing={isResizing}
                                 dragItem={dragItem}
                                 onDrag={onDrag}
                                 handleObjectClick={handleObjectClick}
@@ -214,7 +233,6 @@ export const Slide = ({ slideId }: SlideProps) => {
                                 isSelected={isSelected}
                                 isDragging={isDragging}
                                 isCurrent={isCurrent}
-                                isResizing={isResizing}
                                 dragItem={dragItem}
                                 onDrag={onDrag}
                                 handleObjectClick={handleObjectClick}
@@ -223,6 +241,7 @@ export const Slide = ({ slideId }: SlideProps) => {
                                     fontSize: element.style.fontSize,
                                     color: element.style.color,
                                 }}
+                                push={push}
                             />
                         );
                     }

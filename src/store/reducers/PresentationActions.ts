@@ -32,7 +32,7 @@ export const selectSlideAction = (state: Presentation, action: PayloadAction<str
 export const setSlidesOrderAction = (state: Presentation, action: PayloadAction<string[]>) => {
     state.slidesOrder = [...action.payload];
 };
-export const setCurrentSlidePresAction = (state: Presentation, action: PayloadAction<string>) => {
+export const setCurrentSlideAction = (state: Presentation, action: PayloadAction<string>) => {
     state.currentSlide = action.payload;
 };
 
