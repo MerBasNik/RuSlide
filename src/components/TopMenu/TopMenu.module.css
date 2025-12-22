@@ -1,5 +1,5 @@
 .topMenu {
-    background-color: #f4f4f4;
+    background-color: rgba(244, 244, 244, 0.7);
     width: 100%;
     padding: 15px;
     box-sizing: border-box;
@@ -20,13 +20,13 @@
 .slideShow {
     padding: 15px 25px;
     border-radius: 15px;
-    border: 1px solid #a3a3a3;
+    background-color: #f8e8d5;
+    border: 1px solid rgba(227, 195, 157, 0.5);
     font-size: 20px;
     cursor: pointer;
 }
-
 .slideShow:hover {
-    border: 2px solid #878787;
+    background-color: #e3c39d;
 }
 
 .logo {
@@ -73,4 +73,25 @@
     width: 20px;
     height: 20px;
     cursor: pointer;
+}
+
+.extraBlock {
+    display: flex;
+    gap: 10px;
+}
+
+.userBlock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 7px 15px;
+    border-radius: 15px;
+    background-color: #f8e8d5;
+    border: 1px solid rgba(227, 195, 157, 0.5);
+    font-size: 15px;
+    cursor: pointer;
+}
+.userBlock:hover {
+    background-color: #bbbbbb;
 }

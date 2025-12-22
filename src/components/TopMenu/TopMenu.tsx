@@ -41,17 +41,21 @@ const TopMenu = ({ user, onLogout }: TopMenuProps) => {
         <header className={classes.topMenu}>
             <div className={classes.menuBar}>
                 <div className={classes.menuBarInner}>
-                    <img src="/images/logo3.png" alt="logo" className={classes.logo} />
+                    <img src="/images/logo.png" alt="logo" className={classes.logo} />
                     <div className={classes.menuBlock}>
                         <Input onNameChange={handleNameChange} presentationName={name} />
                         <MenuList />
                     </div>
                 </div>
-                <div onClick={() => console.log("слайд-шоу")} className={classes.slideShow}>
-                    Слайд-шоу
+                <div className={classes.extraBlock}>
+                    <div onClick={() => console.log("слайд-шоу")} className={classes.slideShow}>
+                        Слайд-шоу
+                    </div>
+                    <div className={classes.userBlock}>
+                        {user && <div>{user.name}</div>}
+                        <div onClick={onLogout}>Выйти</div>
+                    </div>
                 </div>
-                <div onClick={onLogout}>Выйти</div>
-                {user && <div>{user.name}</div>}
             </div>
             <div className={classes.menuBlock}>
                 <ToolBarList

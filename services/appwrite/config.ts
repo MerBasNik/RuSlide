@@ -3,7 +3,6 @@ import { Client, Account, Databases, Storage, ID } from 'appwrite';
 const client = new Client();
 
 const PROJECT_ID = "692da510001f6869a0a2"
-// const PROJECT_NAME = "RuSlide"
 const ENDPOINT = "https://fra.cloud.appwrite.io/v1"
 
 client

@@ -10,3 +10,13 @@
     flex-direction: column;
     height: 100vh;
 }
+.presentationsList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.presentationCard {
+    width: 200px;
+    cursor: pointer;
+    border: 1px solid black;
+}

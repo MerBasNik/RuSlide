@@ -21,25 +21,20 @@ export const undoRedoMiddleware: Middleware = store => {
                 present: previousState,
                 future: [history.present, ...history.future]
             }));
-
             return;
         }
 
         if (redo.match(action)) {
             const state = store.getState();
             const history = state.history;
-
             if (history.future.length === 0) return;
-
             const nextState = history.future[0];
-
             next(restoreState(nextState));
             next(updateHistory({
                 past: [...history.past, history.present],
                 present: nextState,
                 future: history.future.slice(1)
             }));
-
             return;
         }
 

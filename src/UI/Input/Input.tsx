@@ -9,7 +9,6 @@ type InputProps = {
 const Input = ({ presentationName, onNameChange }: InputProps) => {
     const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
         const name = event.target.value;
-        console.log(name);
         onNameChange(name);
     };
     return (

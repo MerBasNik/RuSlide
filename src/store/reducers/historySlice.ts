@@ -18,7 +18,6 @@ const historySlice = createSlice({
     initialState,
     reducers: {
         updateHistory: (state, action: PayloadAction<HistoryState>) => {
-            console.log("restoreStateAction 123", state, action);
             return action.payload;
         },
         undo: (state) => {

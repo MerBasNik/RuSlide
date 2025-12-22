@@ -7,6 +7,8 @@ import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.tsx";
 import { addObject, addSlide, setBackground } from "../../store/reducers/PresentationSlice.ts";
 import { createSlide } from "../../store/types/Presentation/Slide.ts";
 import { TypeBackground } from "../../store/types/Background/Background.ts";
+import { storage } from "../../../services/appwrite/config.ts";
+import { ID } from "appwrite";
 
 type ToolBarListProps = {
     undo: () => void;
@@ -24,24 +26,25 @@ const ToolBarList = ({ undo, redo, undoAvailable, redoAvailable }: ToolBarListPr
         const input = document.createElement("input");
         input.type = "file";
         input.accept = "image/*";
-
-        input.onchange = event => {
+        input.onchange = async event => {
             const file = (event.target as HTMLInputElement).files?.[0];
             if (file) {
-                const imageUrl = URL.createObjectURL(file);
-                console.log(imageUrl);
+                const createdFile = await storage.createFile(
+                    "69367bcc001ade42357f",
+                    ID.unique(),
+                    file
+                );
+                const previewUrl = storage.getFileView("69367bcc001ade42357f", createdFile.$id);
                 const image = createImage(
-                    imageUrl,
+                    previewUrl,
                     { width: 100, height: 100 },
                     { x: 100, y: 100 }
                 );
                 if (slideId) {
-                    // Теперь просто диспатчим действие - история сохранится автоматически
                     dispatch(addObject({ slideId, obj: image }));
                 }
             }
         };
-
         input.click();
     };
 
@@ -56,14 +59,11 @@ const ToolBarList = ({ undo, redo, undoAvailable, redoAvailable }: ToolBarListPr
             decoration: "underline",
         });
         const newText = createText("Text", newStyles, { width: 200, height: 200 }, { x: 0, y: 0 });
-
-        // Просто диспатчим действие
         dispatch(addObject({ slideId, obj: newText }));
     };
 
     const handleAddSlide = () => {
         const slide = createSlide();
-        // Просто диспатчим действие
         dispatch(addSlide(slide));
     };
 
@@ -74,8 +74,6 @@ const ToolBarList = ({ undo, redo, undoAvailable, redoAvailable }: ToolBarListPr
 
         colorInput.onchange = event => {
             const color = (event.target as HTMLInputElement).value;
-
-            // Просто диспатчим действие
             dispatch(
                 setBackground({
                     slideId,
