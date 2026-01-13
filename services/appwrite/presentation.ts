@@ -1,100 +1,95 @@
 import type { Presentation } from "../../src/store/types/Presentation/Presentation.ts";
-import { databases } from "./config.ts";
+import { COLLECTION_ID, DATABASE_ID, databases } from "./config.ts";
 import authService from "./auth.ts";
 import { validateDocument, validatePresentation } from "../schema/presentationSchema.ts";
 import { Query } from "appwrite";
 
 const presentationService = () => {
-    const { getCurrentUser } = authService();
+    const { getUser } = authService();
     const savePresentation = async (data: Presentation) => {
-        const user = await getCurrentUser();
-        if (!user) {
-            return;
-        }
-        let presentation;
         try {
-            presentation = await databases.getDocument(
-                '69367aed00219cb3d3b3',
-                "presentations",
-                data.id
-            );
-        } catch {
-            presentation = await databases.createDocument(
-                "69367aed00219cb3d3b3",
-                "presentations",
-                data.id,
-                {
-                    name: data.name,
-                    data: JSON.stringify(data),
-                    user_id: user?.id || "",
-                }
-            );
-            return presentation;
-        }
-        presentation = await databases.updateDocument(
-            "69367aed00219cb3d3b3",
-            "presentations",
-            data.id,
-            {
+            const user = await getUser();
+            if (!user) {
+                return;
+            }
+            const presentationData = {
                 name: data.name,
                 data: JSON.stringify(data),
-                user_id: user?.id || "",
+                user_id: user.id,
+            };
+            const dataConfig = {
+                databaseId: DATABASE_ID,
+                collectionId: COLLECTION_ID,
+                documentId: data.id,
+                data: presentationData
+            };
+            try {
+                return await databases.updateDocument(
+                    dataConfig.databaseId,
+                    dataConfig.collectionId,
+                    dataConfig.documentId,
+                    dataConfig.data
+                );
+            } catch (error: any) {
+                if (error?.code === 404) {
+                    return await databases.createDocument(
+                        dataConfig.databaseId,
+                        dataConfig.collectionId,
+                        dataConfig.documentId,
+                        dataConfig.data
+                    );
+                } else {
+                    return error;
+                }
             }
-        );
-        return presentation;
-    }
+        } catch (error) {
+            return error;
+        }
+    };
     const getPresentation = async (id: string) => {
         try {
-            const presentation = await databases.getDocument(
-                '69367aed00219cb3d3b3',
-                "presentations",
+            const presentationDoc = await databases.getDocument(
+                DATABASE_ID,
+                COLLECTION_ID,
                 id
             );
-            const validDoc = validateDocument(presentation);
-            if (!validDoc) {
+            const isValidDoc = validateDocument(presentationDoc);
+            if (!isValidDoc) {
                 return false;
             }
-            const presentationData = JSON.parse(presentation.data);
+            const presentationData = JSON.parse(presentationDoc.data);
             const validPres = validatePresentation(presentationData);
             if (!validPres) {
                 return false;
             }
-            return true;
+            const presentation: Presentation = presentationData;
+            return presentation;
         } catch {
-            return false;
+            return null;
         }
     }
-
     const getAllPresentations = async () => {
         try {
-            const user = await getCurrentUser();
+            const user = await getUser();
             if (!user) {
                 return [];
             }
             const presentations = await databases.listDocuments(
-                '69367aed00219cb3d3b3',
-                'presentations',
+                DATABASE_ID,
+                COLLECTION_ID,
                 [
                     Query.equal('user_id', user.id),
                     Query.orderDesc('$createdAt')
                 ]
             );
             return presentations.documents.map(doc => {
-                const validDoc = validateDocument(doc);
-                if (!validDoc) {
+                const isValidDoc = validateDocument(doc);
+                if (!isValidDoc) {
                     return null;
                 }
-                return {
-                    id: doc.$id,
-                    name: doc.name,
-                    data: doc.data ? JSON.parse(doc.data) : null,
-                    userId: doc.user_id,
-                    createdAt: doc.$createdAt,
-                    updatedAt: doc.$updatedAt,
-                    rawDocument: doc,
-                };
+                const presentation: Presentation = JSON.parse(doc.data);
+                return presentation;
             });
-
         } catch {
             return [];
         }

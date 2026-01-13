@@ -1,27 +1,36 @@
-import React, { useState } from "react";
-import { account } from "../../../services/appwrite/config.ts";
+import React, { useContext, useState } from "react";
 import classes from "./LoginForm.module.css";
+import authService from "../../../services/appwrite/auth.ts";
+import { NavLink, useNavigate } from "react-router";
+import { AuthContext } from "../../context/context.ts";
 
-interface LoginFormProps {
-    onSuccess?: () => void;
-    onSwitchToRegister?: () => void;
-}
+const LoginForm = () => {
+    const { setIsAuth, setUser } = useContext(AuthContext);
+    const navigate = useNavigate();
+    const { login } = authService();
 
-const LoginForm = ({ onSuccess, onSwitchToRegister }: LoginFormProps) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    // const [isLoading, setIsLoading] = useState(false);
+
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
+        // setIsLoading(true);
         try {
-            await account.createEmailPasswordSession(email, password);
-            if (onSuccess) {
-                onSuccess();
+            const user = await login(email, password);
+            if (user) {
+                setUser(user);
+                setIsAuth(true);
+                navigate("/ruslide/home");
+            } else {
+                setError("Login failed. Please check your credentials.");
             }
-        } catch (error) {
-            setError("Login failed. Please check your credentials. Error: " + error);
-            return null;
+        } catch (error: any) {
+            setError("Login failed: " + error.message);
+        } finally {
+            // setIsLoading(false);
         }
     };
 
@@ -58,15 +67,9 @@ const LoginForm = ({ onSuccess, onSwitchToRegister }: LoginFormProps) => {
                             />
                         </div>
                         <div className={classes.formItem}>
-                            {onSwitchToRegister && (
-                                <button
-                                    type="button"
-                                    onClick={onSwitchToRegister}
-                                    className={`${classes.btn}`}
-                                >
-                                    Register
-                                </button>
-                            )}
+                            <NavLink to="/register" className={`${classes.btn}`}>
+                                Register
+                            </NavLink>
                             <button type="submit" className={`${classes.btn} ${classes.loginBtn}`}>
                                 Login
                             </button>

@@ -73,7 +73,6 @@ export const SlideThumbnail = ({
                 </text>
             );
         }
-
         return null;
     };
 

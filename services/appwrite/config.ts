@@ -9,7 +9,8 @@ client
     .setEndpoint(ENDPOINT)
     .setProject(PROJECT_ID);
 
+export const DATABASE_ID = '69367aed00219cb3d3b3';
+export const COLLECTION_ID = 'presentations';
 export const account = new Account(client);
 export const databases = new Databases(client);
 export const storage = new Storage(client);
-export { ID };

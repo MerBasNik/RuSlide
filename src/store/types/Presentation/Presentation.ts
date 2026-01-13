@@ -22,7 +22,6 @@ function createPresentation(name?: string): Presentation {
 }
 
 export type { Presentation };
-
 export {
     createPresentation,
 };

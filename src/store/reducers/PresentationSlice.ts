@@ -6,7 +6,7 @@ import {
     restoreStateAction,
     selectSlideAction,
     setBackgroundAction,
-    setCurrentSlideAction,
+    setCurrentSlideAction, setPresentationAction,
     setPresentationNameAction,
     setSlidesOrderAction,
 } from "./PresentationActions.ts";
@@ -22,12 +22,13 @@ import {
     setSizeAction,
 } from "./ObjectActions.ts";
 
-const initialState: Presentation = createPresentation("New Presentation");
+const initialState: Presentation = {}; // = createPresentation("New Presentation");
 
 const presentationSlice = createSlice({
     name: "presentation",
     initialState,
     reducers: {
+        setPresentation: setPresentationAction,
         setPresentationName: setPresentationNameAction,
         addSlide: addSlideAction,
         deleteSlide: deleteSlideAction,
@@ -49,6 +50,7 @@ const presentationSlice = createSlice({
 });
 
 export const {
+    setPresentation,
     setPresentationName,
     restoreState,
     addSlide,

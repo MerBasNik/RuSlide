@@ -95,3 +95,34 @@
 .userBlock:hover {
     background-color: #bbbbbb;
 }
+.backButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    background-color: #f8e8d5;
+    border: 1px solid rgba(227, 195, 157, 0.5);
+    margin-bottom: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    color: black;
+}
+/*.userBlock {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    gap: 1rem;*/
+/*}*/
+
+/*.logoutButton {*/
+/*    color: #f56565;*/
+/*    cursor: pointer;*/
+/*    padding: 0.5rem;*/
+/*    border-radius: 4px;*/
+/*    transition: background-color 0.2s;*/
+/*}*/
+
+/*.logoutButton:hover {*/
+/*    background-color: rgba(245, 101, 101, 0.1);*/
+/*}*/

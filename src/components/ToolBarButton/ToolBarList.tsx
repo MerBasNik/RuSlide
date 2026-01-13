@@ -4,11 +4,12 @@ import { createText } from "../../store/types/SlideObject/Text/Text.ts";
 import { createTextStyle } from "../../store/types/SlideObject/Text/TextStyle.ts";
 import { createImage } from "../../store/types/SlideObject/Image.ts";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.tsx";
-import { addObject, addSlide, setBackground } from "../../store/reducers/PresentationSlice.ts";
+import { addObject, addSlide } from "../../store/reducers/PresentationSlice.ts";
 import { createSlide } from "../../store/types/Presentation/Slide.ts";
-import { TypeBackground } from "../../store/types/Background/Background.ts";
 import { storage } from "../../../services/appwrite/config.ts";
 import { ID } from "appwrite";
+import { useState } from "react";
+import BackgroundDropdown from "../BackgroundDropDown/BackgroundDropDown.tsx";
 
 type ToolBarListProps = {
     undo: () => void;
@@ -17,35 +18,50 @@ type ToolBarListProps = {
     redoAvailable: boolean;
 };
 
-const ToolBarList = ({ undo, redo, undoAvailable, redoAvailable }: ToolBarListProps) => {
-    const dispatch = useAppDispatch();
-    const presentation = useAppSelector(state => state.presentation);
-    const { currentSlide } = presentation;
-
-    const handleAddImage = (slideId: string) => {
+export const uploadImage = (): Promise<string | null> => {
+    return new Promise(resolve => {
         const input = document.createElement("input");
         input.type = "file";
         input.accept = "image/*";
         input.onchange = async event => {
             const file = (event.target as HTMLInputElement).files?.[0];
             if (file) {
-                const createdFile = await storage.createFile(
-                    "69367bcc001ade42357f",
-                    ID.unique(),
-                    file
-                );
-                const previewUrl = storage.getFileView("69367bcc001ade42357f", createdFile.$id);
-                const image = createImage(
-                    previewUrl,
-                    { width: 100, height: 100 },
-                    { x: 100, y: 100 }
-                );
-                if (slideId) {
-                    dispatch(addObject({ slideId, obj: image }));
+                try {
+                    const createdFile = await storage.createFile(
+                        "69367bcc001ade42357f",
+                        ID.unique(),
+                        file
+                    );
+                    resolve(createdFile.$id);
+                } catch (error) {
+                    resolve(null);
                 }
+            } else {
+                resolve(null);
             }
         };
+        input.oncancel = () => {
+            resolve(null);
+        };
         input.click();
+    });
+};
+
+const ToolBarList = ({ undo, redo, undoAvailable, redoAvailable }: ToolBarListProps) => {
+    const dispatch = useAppDispatch();
+    const presentation = useAppSelector(state => state.presentation);
+    const { currentSlide } = presentation;
+    const [showBackgroundDropdown, setShowBackgroundDropdown] = useState(false);
+
+    const handleAddImage = async (slideId: string) => {
+        const uploadFileId = await uploadImage();
+        if (uploadFileId) {
+            const previewUrl = storage.getFileView("69367bcc001ade42357f", uploadFileId);
+            const image = createImage(previewUrl, { width: 100, height: 100 }, { x: 100, y: 100 });
+            if (slideId) {
+                dispatch(addObject({ slideId, obj: image }));
+            }
+        }
     };
 
     const handleAddText = (slideId: string) => {
@@ -67,23 +83,6 @@ const ToolBarList = ({ undo, redo, undoAvailable, redoAvailable }: ToolBarListPr
         dispatch(addSlide(slide));
     };
 
-    const handleChangeBackground = (slideId: string) => {
-        const colorInput = document.createElement("input");
-        colorInput.type = "color";
-        colorInput.value = "#ffffff";
-
-        colorInput.onchange = event => {
-            const color = (event.target as HTMLInputElement).value;
-            dispatch(
-                setBackground({
-                    slideId,
-                    background: { type: TypeBackground.Color, color: color },
-                })
-            );
-        };
-        colorInput.click();
-    };
-
     const UndoAction = () => {
         if (undoAvailable) undo();
     };
@@ -92,8 +91,12 @@ const ToolBarList = ({ undo, redo, undoAvailable, redoAvailable }: ToolBarListPr
         if (redoAvailable) redo();
     };
 
+    const toggleBackgroundDropdown = () => {
+        setShowBackgroundDropdown(!showBackgroundDropdown);
+    };
+
     return (
-        <ul className={classes.toolBar}>
+        <ul className={classes.toolBar} style={{ position: "relative" }}>
             <li>
                 <ToolBarButton
                     clickHandle={() => handleAddText(currentSlide)}
@@ -150,13 +153,17 @@ const ToolBarList = ({ undo, redo, undoAvailable, redoAvailable }: ToolBarListPr
                     src={"/images/image.png"}
                 />
             </li>
-            <li>
-                <ToolBarButton
-                    clickHandle={() => handleChangeBackground(currentSlide)}
-                    nameAction={"изменить фон"}
-                >
+            <li style={{ position: "relative" }}>
+                <ToolBarButton clickHandle={toggleBackgroundDropdown} nameAction={"изменить фон"}>
                     Фон
                 </ToolBarButton>
+
+                {showBackgroundDropdown && (
+                    <BackgroundDropdown
+                        slideId={currentSlide}
+                        onClose={() => setShowBackgroundDropdown(false)}
+                    />
+                )}
             </li>
         </ul>
     );

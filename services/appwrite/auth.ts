@@ -1,83 +1,62 @@
-import { account, ID } from "./config";
-import { useState } from "react";
-
-export interface User {
-    id: string;
-    email: string;
-    name: string;
-}
+import { account } from './config.ts';
+import { ID } from "appwrite";
 
 const authService = () => {
-    const [user, setUser] = useState<User | null>(null);
-    const register = async (email: string, password: string, name: string) => {
+    const getUser = async () => {
         try {
-            await account.create(
-                ID.unique(),
-                email,
-                password,
-                name
-            );
-            return await login(email, password);
-        } catch {
+            const userData = await account.get();
+            const user: IUser = {
+                id: userData.$id,
+                username: userData.name,
+                email: userData.email,
+            }
+            return user;
+        } catch (error) {
             return null;
         }
     };
+
+    const register = async (email: string, password: string, name: string) => {
+        try {
+            await account.create(ID.unique(), email, password, name);
+            await account.createEmailPasswordSession(email, password);
+            return await getUser();
+        } catch (error) {
+            return error;
+        }
+    };
+
     const login = async (email: string, password: string) => {
         try {
             await account.createEmailPasswordSession(email, password);
-            const currentUser = await getCurrentUser();
-            setUser(currentUser);
-            return currentUser;
-        } catch {
-            return null;
+            return await getUser();
+        } catch (error) {
+            return error;
         }
     };
 
-    const getCurrentUser = async () => {
-        try {
-            const user = await account.get();
-            return {
-                id: user.$id,
-                email: user.email,
-                name: user.name
-            } as User;
-        } catch {
-            return null;
-        }
-    };
     const handleLogout = async () => {
-        await account.deleteSession("current");
-        setUser(null);
-    };
-
-    const checkAuth = async () => {
-        const currentUser = await getCurrentUser();
-        const isAuth = currentUser?.id === user?.id;
-        if (isAuth) {
-            return true;
-        } else {
-            setUser(currentUser);
-        }
-        return false;
-    };
-    const handleLoginSuccess = async () => {
         try {
-            const currentUser = await getCurrentUser();
-            setUser(currentUser);
-        } catch {
-            return null;
+            await account.deleteSession('current');
+            console.log("Account logged out");
+            return true;
+        } catch (error) {
+            console.error("Logout error:", error);
+            return false;
         }
     };
 
     return {
-        user,
+        getUser,
         register,
         login,
-        handleLogout,
-        handleLoginSuccess,
-        checkAuth,
-        getCurrentUser
+        handleLogout
     };
 };
 
+export interface IUser {
+    id: string;
+    username: string;
+    email: string;
+}
 export default authService;

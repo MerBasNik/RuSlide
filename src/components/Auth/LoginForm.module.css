@@ -35,6 +35,8 @@
 .btn {
     display: flex;
     justify-content: center;
+    text-decoration: none;
+    color: black;
     align-items: center;
     cursor: pointer;
     padding: 7px 20px;

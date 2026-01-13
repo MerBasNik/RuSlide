@@ -1,19 +1,21 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import authService from "../../../services/appwrite/auth.ts";
 import classes from "./LoginForm.module.css";
+import { NavLink, useNavigate } from "react-router";
+import { AuthContext } from "../../context/context.ts";
 
-interface RegisterFormProps {
-    onSuccess: () => void;
-    onSwitchToLogin: () => void;
-}
-
-const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
+const RegisterForm = () => {
+    // const { handleLoginSuccess } = authService();
+    const { setIsAuth, setUser } = useContext(AuthContext);
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
-    const { register } = authService();
+    // const [isLoading, setIsLoading] = useState(false);
+
+    const { register, login } = authService();
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -21,13 +23,22 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
             setError("Passwords do not match");
             return null;
         }
+
         setError("");
+        // setIsLoading(true);
+
         try {
             await register(email, password, name);
-            onSuccess();
-        } catch (error) {
-            setError("Registration failed. Error: " + error);
-            return null;
+            const user = await login(email, password);
+            if (user) {
+                setUser(user);
+                setIsAuth(true);
+                navigate("/ruslide/home");
+            }
+        } catch (error: any) {
+            setError("Registration failed: " + error.message);
+        } finally {
+            // setIsLoading(false);
         }
     };
 
@@ -80,13 +91,9 @@ const RegisterForm = ({ onSuccess, onSwitchToLogin }: RegisterFormProps) => {
                             />
                         </div>
                         <div className={classes.formItem}>
-                            <button
-                                type="button"
-                                onClick={onSwitchToLogin}
-                                className={`${classes.btn}`}
-                            >
+                            <NavLink to="/login" className={`${classes.btn}`}>
                                 Login
-                            </button>
+                            </NavLink>
                             <button
                                 type="submit"
                                 className={`${classes.btn} ${classes.registerBtn}`}
