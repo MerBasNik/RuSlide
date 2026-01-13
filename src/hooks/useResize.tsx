@@ -57,7 +57,7 @@ export const useResize = ({ slideRef, slideId }: UseResizeProps) => {
     );
 
     const handleResizeMove = useCallback(
-        (moveEvent: React.MouseEvent) => {
+        (moveEvent: MouseEvent) => {
             if (
                 !isResizing ||
                 !resizedElementRef.current ||
