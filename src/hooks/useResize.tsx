@@ -25,7 +25,7 @@ export const useResize = ({ slideRef, slideId }: UseResizeProps) => {
     const currentElementRef = useRef<SlideObject | null>(null);
     const dispatch = useAppDispatch();
     const handleResizeStart = useCallback(
-        (event: MouseEvent, direction: ResizeDirection, element: SlideObject) => {
+        (event: React.MouseEvent, direction: ResizeDirection, element: SlideObject) => {
             event.preventDefault();
             event.stopPropagation();
 
@@ -57,7 +57,7 @@ export const useResize = ({ slideRef, slideId }: UseResizeProps) => {
     );
 
     const handleResizeMove = useCallback(
-        (moveEvent: MouseEvent) => {
+        (moveEvent: React.MouseEvent) => {
             if (
                 !isResizing ||
                 !resizedElementRef.current ||
