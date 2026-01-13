@@ -3,7 +3,7 @@ import type { Slide } from "../types/Presentation/Slide.ts";
 import type { Background } from "../types/Background/Background.ts";
 import type { Presentation } from "../types/Presentation/Presentation.ts";
 
-export const setPresentationAction = (state: Presentation, action: PayloadAction<Presentation>) => {
+export const setPresentationAction = (_state: Presentation, action: PayloadAction<Presentation>) => {
     return action.payload;
 };
 export const setPresentationNameAction = (state: Presentation, action: PayloadAction<string>) => {
@@ -50,6 +50,6 @@ export const setBackgroundAction = (
     }
 };
 
-export const restoreStateAction = (state: Presentation, action: PayloadAction<Presentation>) => {
+export const restoreStateAction = (_state: Presentation, action: PayloadAction<Presentation>) => {
     return action.payload;
 }

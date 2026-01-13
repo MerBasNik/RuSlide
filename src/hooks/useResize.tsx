@@ -1,11 +1,11 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, type RefObject } from "react";
 import type { SlideObject } from "../store/types/SlideObject/DefaultObject.ts";
 import { type ResizeDirection } from "../UI/ResizeHandles/ResizeHandle.tsx";
 import { setSize } from "../store/reducers/PresentationSlice.ts";
 import { useAppDispatch } from "./useRedux.tsx";
 
 interface UseResizeProps {
-    slideRef: React.RefObject<HTMLDivElement | null>;
+    slideRef: RefObject<HTMLDivElement | null>;
     slideId: string;
 }
 
@@ -25,7 +25,7 @@ export const useResize = ({ slideRef, slideId }: UseResizeProps) => {
     const currentElementRef = useRef<SlideObject | null>(null);
     const dispatch = useAppDispatch();
     const handleResizeStart = useCallback(
-        (event: React.MouseEvent, direction: ResizeDirection, element: SlideObject) => {
+        (event: MouseEvent, direction: ResizeDirection, element: SlideObject) => {
             event.preventDefault();
             event.stopPropagation();
 

@@ -1,7 +1,7 @@
 import { type Slide } from "./Slide.ts";
 import { generateId } from "./Id.ts";
 
-interface Presentation {
+type Presentation = {
     id: string;
     name: string;
     slides: Record<string, Slide>;

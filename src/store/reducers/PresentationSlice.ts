@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import  { createPresentation, type Presentation } from "../types/Presentation/Presentation.ts";
+import  { type Presentation } from "../types/Presentation/Presentation.ts";
 import {
     addSlideAction,
     deleteSlideAction,
@@ -22,7 +22,7 @@ import {
     setSizeAction,
 } from "./ObjectActions.ts";
 
-const initialState: Presentation = {}; // = createPresentation("New Presentation");
+const initialState: Presentation = <Presentation>{};
 
 const presentationSlice = createSlice({
     name: "presentation",
@@ -62,7 +62,6 @@ export const {
     deleteObject,
     setBackground,
     setSize,
-    selectObject,
     setPosition,
     setContent,
 } = presentationSlice.actions;

@@ -135,7 +135,7 @@ const SlideShow: React.FC = () => {
                             top: `${object.position.y}px`,
                             width: `${object.size.width}px`,
                             height: `${object.size.height}px`,
-                        };
+                        } as const;
 
                         switch (object.type) {
                             case "text":

@@ -9,7 +9,6 @@
         "lint": "eslint .",
         "preview": "vite preview",
         "formatting": "npx prettier . --write && npx stylelint .",
-
         "docker:build": "docker build -t react-app .",
         "docker:run": "docker run -p 3000:80 react-app",
         "docker:compose": "docker-compose up -d",
