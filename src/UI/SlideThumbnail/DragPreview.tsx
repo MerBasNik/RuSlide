@@ -6,10 +6,19 @@ interface DragPreviewProps {
     visible: boolean;
     position: { x: number; y: number };
     item: DragItem | null;
+    width: number;
+    height: number;
     renderThumbnail: (item: DragItem) => JSX.Element;
 }
 
-export const DragPreview = ({ visible, position, item, renderThumbnail }: DragPreviewProps) => {
+export const DragPreview = ({
+    visible,
+    position,
+    width,
+    height,
+    item,
+    renderThumbnail,
+}: DragPreviewProps) => {
     if (!visible || !item) return null;
     return (
         <div
@@ -17,6 +26,8 @@ export const DragPreview = ({ visible, position, item, renderThumbnail }: DragPr
             style={{
                 left: position.x,
                 top: position.y,
+                width: `${width}px`,
+                height: `${height}px`,
             }}
         >
             {renderThumbnail(item)}

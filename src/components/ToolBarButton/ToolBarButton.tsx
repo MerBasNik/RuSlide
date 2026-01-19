@@ -5,16 +5,17 @@ type ToolBarButtonProps = {
     editor?: Presentation;
     src?: string;
     nameAction: string;
+    className?: string;
     clickHandle: () => any;
     children?: React.ReactNode;
 };
 
-const ToolBarButton = ({ src, children, clickHandle }: ToolBarButtonProps) => {
+const ToolBarButton = ({ src, children, clickHandle, className }: ToolBarButtonProps) => {
     const handleClick = () => {
         clickHandle();
     };
     return (
-        <div>
+        <div className={className}>
             {src ? (
                 <img onClick={handleClick} src={src} alt="" className={classes.toolBarButton} />
             ) : (

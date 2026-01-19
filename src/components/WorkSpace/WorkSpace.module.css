@@ -1,7 +1,10 @@
 .workSpace {
     width: 100%;
-    background-color: #ffffff; /*#f4f4f4;*/
-    display: flex;
+    background-color: #ffffff;
     border: 1px solid #d5d5d5;
     padding: 20px;
+    box-sizing: border-box;
+    flex: 1;
+    height: 100vh;
+    overflow: auto;
 }

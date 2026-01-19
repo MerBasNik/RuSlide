@@ -6,13 +6,13 @@ interface SlideThumbnailProps {
     objects: Record<string, SlideObject>;
     width: number;
     height: number;
-    className: string;
+    // className: string;
 }
 
 export const SlideThumbnail = ({
     slide,
     objects,
-    className,
+    // className,
     width,
     height,
 }: SlideThumbnailProps) => {
@@ -77,7 +77,7 @@ export const SlideThumbnail = ({
     };
 
     return (
-        <svg className={className}>
+        <svg>
             {renderBackground()}
             {Object.values(objects).map(object => renderObject(object))}
         </svg>

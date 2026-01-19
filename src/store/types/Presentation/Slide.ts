@@ -8,6 +8,7 @@ type Slide = {
     background: Background;
     objects: Record<string, SlideObject>;
     selectedObjects: Array<string>;
+    currentObject: string;
 };
 
 function createSlide(): Slide {
@@ -17,6 +18,7 @@ function createSlide(): Slide {
         objectsOrder: [],
         selectedObjects: [],
         background: setBackgroundColor("#ffffff"),
+        currentObject: "",
     };
 }
 

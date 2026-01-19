@@ -6,8 +6,13 @@ import {
     TypeObject,
 } from "../types/SlideObject/DefaultObject.ts";
 import type { Presentation } from "../types/Presentation/Presentation.ts";
+import type { TextStyle } from "../types/SlideObject/Text/TextStyle.ts";
+import type { Text } from "../types/SlideObject/Text/Text.ts";
 
-export const addObjectAction = (state: Presentation, action: PayloadAction<{ slideId: string; obj: SlideObject }>) => {
+export const addObjectAction = (
+    state: Presentation,
+    action: PayloadAction<{ slideId: string; obj: SlideObject }>
+) => {
     const { slideId, obj } = action.payload;
     const slide = state.slides[slideId];
     if (slide) {
@@ -16,7 +21,10 @@ export const addObjectAction = (state: Presentation, action: PayloadAction<{ sli
         slide.selectedObjects = [obj.id];
     }
 };
-export const deleteObjectAction = (state: Presentation, action: PayloadAction<{ slideId: string; objIds: string[] }>) => {
+export const deleteObjectAction = (
+    state: Presentation,
+    action: PayloadAction<{ slideId: string; objIds: string[] }>
+) => {
     const { slideId, objIds } = action.payload;
     const slide = state.slides[slideId];
     if (slide) {
@@ -27,7 +35,10 @@ export const deleteObjectAction = (state: Presentation, action: PayloadAction<{ 
         slide.selectedObjects = slide.selectedObjects.filter(id => !objIds.includes(id));
     }
 };
-export const moveObjectUpAction = (state: Presentation, action: PayloadAction<{ slideId: string; objId: string }>) => {
+export const moveObjectUpAction = (
+    state: Presentation,
+    action: PayloadAction<{ slideId: string; objId: string }>
+) => {
     const { slideId, objId } = action.payload;
     const slide = state.slides[slideId];
     if (slide) {
@@ -39,7 +50,10 @@ export const moveObjectUpAction = (state: Presentation, action: PayloadAction<{ 
         }
     }
 };
-export const moveObjectDownAction = (state: Presentation, action: PayloadAction<{ slideId: string; objId: string }>) => {
+export const moveObjectDownAction = (
+    state: Presentation,
+    action: PayloadAction<{ slideId: string; objId: string }>
+) => {
     const { slideId, objId } = action.payload;
     const slide = state.slides[slideId];
     if (slide) {
@@ -51,14 +65,20 @@ export const moveObjectDownAction = (state: Presentation, action: PayloadAction<
         }
     }
 };
-export const selectObjectAction = (state: Presentation, action: PayloadAction<{ slideId: string; objectIds: string[] }>) => {
+export const selectObjectAction = (
+    state: Presentation,
+    action: PayloadAction<{ slideId: string; objectIds: string[] }>
+) => {
     const { slideId, objectIds } = action.payload;
     const slide = state.slides[slideId];
     if (slide) {
         slide.selectedObjects = [...objectIds];
     }
 };
-export const setSizeAction = (state: Presentation, action: PayloadAction<{ slideId: string; objId: string; size: Size }>) => {
+export const setSizeAction = (
+    state: Presentation,
+    action: PayloadAction<{ slideId: string; objId: string; size: Size }>
+) => {
     const { slideId, objId, size } = action.payload;
     const slide = state.slides[slideId];
     if (slide) {
@@ -107,5 +127,60 @@ export const setContentAction = (
         if (obj && obj.type === TypeObject.Text) {
             obj.content = content;
         }
+    }
+};
+
+export const updateTextObjectAction = (
+    state: Presentation,
+    action: PayloadAction<{
+        slideId: string;
+        objectId: string;
+        updates: Partial<Text>;
+    }>
+) => {
+    const { slideId, objectId, updates } = action.payload;
+    const slide = state.slides[slideId];
+    if (slide && slide.objects[objectId]?.type === "text") {
+        slide.objects[objectId] = {
+            ...slide.objects[objectId],
+            ...updates,
+            style: {
+                ...slide.objects[objectId].style,
+                ...(updates.style || {}),
+            },
+        };
+    }
+};
+
+export const updateTextStyleAction = (
+    state: Presentation,
+    action: PayloadAction<{
+        slideId: string;
+        objectId: string;
+        styleUpdates: Partial<TextStyle>;
+    }>
+) => {
+    const { slideId, objectId, styleUpdates } = action.payload;
+    const slide = state.slides[slideId];
+    if (slide && slide.objects[objectId]?.type === "text") {
+        const textObject = slide.objects[objectId];
+        textObject.style = {
+            ...textObject.style,
+            ...styleUpdates,
+        };
+    }
+};
+
+export const setCurrentObjectAction = (
+    state: Presentation,
+    action: PayloadAction<{
+        slideId: string;
+        objectId: string;
+    }>
+) => {
+    const { slideId, objectId } = action.payload;
+    const slide = state.slides[slideId];
+    if (slide) {
+        slide.currentObject = objectId;
     }
 };

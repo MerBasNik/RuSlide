@@ -13,6 +13,7 @@ type TextStyle = {
     decoration?: Decoration;
     color?: string;
     lineHeight?: number;
+    textAlign?: "left" | "center" | "right" | "justify"; // Добавлено
 };
 
 function createTextStyle(textStyle: TextStyle): TextStyle {

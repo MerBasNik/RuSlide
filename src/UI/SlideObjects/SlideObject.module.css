@@ -15,7 +15,6 @@
 .slideObj .image {
     width: 100%;
     height: 100%;
-    object-fit: contain;
     user-select: none;
     -webkit-user-drag: none;
     pointer-events: none;

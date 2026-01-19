@@ -44,21 +44,6 @@ const HomePage = () => {
         loadPres();
     }, [isAuth]);
 
-    // const svgRef = useRef<SVGSVGElement>(null);
-    // const handleSaveThumbnail = async () => {
-    //     if (!svgRef.current) return;
-    //
-    //     try {
-    //         const fileId = await saveSlideThumbnail(
-    //             svgRef.current,
-    //             `slide_${slide?.id || 'thumbnail'}`
-    //         );
-    //         console.log('Thumbnail saved with ID:', fileId);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // };
-
     const handleCreateNew = async () => {
         try {
             const newPresentation = createPresentation("Новая презентация");

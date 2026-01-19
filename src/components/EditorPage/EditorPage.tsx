@@ -29,7 +29,6 @@ const EditorPage = () => {
         if (presentation?.id) {
             const handleSave = async () => {
                 try {
-                    console.log("save");
                     await savePresentation(presentation);
                 } catch (error) {
                     console.error("Auto-save failed:", error);

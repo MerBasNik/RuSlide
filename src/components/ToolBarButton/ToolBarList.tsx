@@ -6,45 +6,16 @@ import { createImage } from "../../store/types/SlideObject/Image.ts";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.tsx";
 import { addObject, addSlide } from "../../store/reducers/PresentationSlice.ts";
 import { createSlide } from "../../store/types/Presentation/Slide.ts";
-import { storage } from "../../../services/appwrite/config.ts";
-import { ID } from "appwrite";
 import { useState } from "react";
 import BackgroundDropdown from "../BackgroundDropDown/BackgroundDropDown.tsx";
+import { TextEditToolbar } from "../TextEditor/TextEditorToolbar.tsx";
+import { uploadImage } from "./lib.ts";
 
 type ToolBarListProps = {
     undo: () => void;
     redo: () => void;
     undoAvailable: boolean;
     redoAvailable: boolean;
-};
-
-export const uploadImage = (): Promise<string | null> => {
-    return new Promise(resolve => {
-        const input = document.createElement("input");
-        input.type = "file";
-        input.accept = "image/*";
-        input.onchange = async event => {
-            const file = (event.target as HTMLInputElement).files?.[0];
-            if (file) {
-                try {
-                    const createdFile = await storage.createFile(
-                        "69367bcc001ade42357f",
-                        ID.unique(),
-                        file
-                    );
-                    resolve(createdFile.$id);
-                } catch (error) {
-                    resolve(null);
-                }
-            } else {
-                resolve(null);
-            }
-        };
-        input.oncancel = () => {
-            resolve(null);
-        };
-        input.click();
-    });
 };
 
 const ToolBarList = ({ undo, redo, undoAvailable, redoAvailable }: ToolBarListProps) => {
@@ -54,25 +25,34 @@ const ToolBarList = ({ undo, redo, undoAvailable, redoAvailable }: ToolBarListPr
     const [showBackgroundDropdown, setShowBackgroundDropdown] = useState(false);
 
     const handleAddImage = async (slideId: string) => {
-        const uploadFileId = await uploadImage();
-        if (uploadFileId) {
-            const previewUrl = storage.getFileView("69367bcc001ade42357f", uploadFileId);
-            const image = createImage(previewUrl, { width: 100, height: 100 }, { x: 100, y: 100 });
+        try {
+            const data = await uploadImage();
+            if (data === null) return;
+            const parseData = JSON.parse(data);
+            const image = createImage(
+                parseData.fileUrl,
+                { width: parseData.dimensions.width, height: parseData.dimensions.height },
+                { x: 100, y: 100 },
+                parseData.base64
+            );
+
             if (slideId) {
                 dispatch(addObject({ slideId, obj: image }));
             }
+        } catch (error) {
+            console.error("Error adding image:", error);
         }
     };
 
     const handleAddText = (slideId: string) => {
         const newStyles = createTextStyle({
             fontSize: 20,
-            fontWeight: "bold",
+            fontWeight: "normal",
             fontFamily: "sans-serif",
-            fontStyle: "italic",
+            fontStyle: "normal",
             lineHeight: 1,
             color: "black",
-            decoration: "underline",
+            decoration: "none",
         });
         const newText = createText("Text", newStyles, { width: 200, height: 200 }, { x: 0, y: 0 });
         dispatch(addObject({ slideId, obj: newText }));
@@ -165,6 +145,7 @@ const ToolBarList = ({ undo, redo, undoAvailable, redoAvailable }: ToolBarListPr
                     />
                 )}
             </li>
+            <TextEditToolbar />
         </ul>
     );
 };

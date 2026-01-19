@@ -17,9 +17,12 @@ import {
     moveObjectUpAction,
     selectObjectAction,
     setContentAction,
+    setCurrentObjectAction,
     setPositionAction,
     setRotationAction,
     setSizeAction,
+    updateTextObjectAction,
+    updateTextStyleAction,
 } from "./ObjectActions.ts";
 
 const initialState: Presentation = <Presentation>{};
@@ -46,6 +49,9 @@ const presentationSlice = createSlice({
         setRotation: setRotationAction,
         setContent: setContentAction,
         restoreState: restoreStateAction,
+        updateTextObject: updateTextObjectAction,
+        updateTextStyle: updateTextStyleAction,
+        setCurrentObject: setCurrentObjectAction,
     },
 });
 
@@ -64,6 +70,9 @@ export const {
     setSize,
     setPosition,
     setContent,
+    updateTextObject,
+    updateTextStyle,
+    setCurrentObject,
 } = presentationSlice.actions;
 
 export default presentationSlice.reducer;
