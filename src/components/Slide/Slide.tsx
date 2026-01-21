@@ -82,7 +82,6 @@ export const Slide = ({ slideId }: SlideProps) => {
         backgroundStyle.backgroundPosition = "center";
     }
 
-    // Функции для редактирования текста
     const handleTextEditStart = useCallback(
         (elementId: string) => {
             if (objects?.[elementId]?.type === "text") {
@@ -91,7 +90,6 @@ export const Slide = ({ slideId }: SlideProps) => {
                 setIsEditingText(true);
                 setTextEditValue(objects[elementId].content);
 
-                // Фокус на текстовое поле
                 setTimeout(() => {
                     if (textEditRef.current) {
                         textEditRef.current.focus();
@@ -171,10 +169,8 @@ export const Slide = ({ slideId }: SlideProps) => {
         }
     };
 
-    // Обработка нажатия клавиш
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
-            // Backspace - удаление
             if (event.key === "Backspace" && selectedObjects.length > 0 && !isEditingText) {
                 const objectsToDelete = [...selectedObjects];
                 dispatch(deleteObject({ slideId, objIds: objectsToDelete }));
@@ -183,17 +179,14 @@ export const Slide = ({ slideId }: SlideProps) => {
                 setIsEditingText(false);
             }
 
-            // Escape - отмена редактирования
             if (event.key === "Escape" && isEditingText) {
                 handleTextEditCancel();
             }
 
-            // Enter - сохранение редактирования
             if (event.key === "Enter" && isEditingText && event.ctrlKey) {
                 handleTextEditSave();
             }
 
-            // F2 или двойной клик - редактирование текста
             if (
                 (event.key === "F2" || event.key === "Enter") &&
                 currentTextObject &&
@@ -222,14 +215,12 @@ export const Slide = ({ slideId }: SlideProps) => {
         handleTextEditStart,
     ]);
 
-    // Авторазмер текстового поля при редактировании
     useEffect(() => {
         if (isEditingText && textEditRef.current && currentTextObject) {
             const textarea = textEditRef.current;
             textarea.style.height = "auto";
             textarea.style.height = textarea.scrollHeight + "px";
 
-            // Позиционируем поверх текстового объекта
             const objectElement = document.querySelector(`[data-drag-id="${currObject}"]`);
             if (objectElement) {
                 const rect = objectElement.getBoundingClientRect();

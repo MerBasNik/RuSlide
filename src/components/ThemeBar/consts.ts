@@ -1,87 +1,76 @@
-import { type Background, TypeBackground } from "../../store/types/Background/Background.ts";
-
-export type Theme = {
-    id: string;
-    name: string;
-    mainSlide: {
-        background: Background;
-    };
-    allSlides: {
-        background: Background;
-    };
-};
+import { type Theme, TypeBackground } from "../../store/types/Background/Background.ts";
 
 export const Themes: Theme[] = [
     {
         id: "1",
-        name: "светлая",
-        mainSlide: { background: { type: TypeBackground.Color, color: "#cc1628" } },
-        allSlides: { background: { type: TypeBackground.Color, color: "#ffffff" } },
+        name: "Простая светлая",
+        mainSlide: {
+            background: { type: TypeBackground.Color, color: "#ffffff" },
+            textStyle: { color: "#000000" },
+        },
+        allSlides: {
+            background: { type: TypeBackground.Color, color: "#ffffff" },
+            textStyle: { color: "#000000" },
+        },
     },
     {
         id: "2",
-        name: "темная",
-        mainSlide: { background: { type: TypeBackground.Color, color: "#d5dae2" } },
-        allSlides: { background: { type: TypeBackground.Color, color: "#54b9ff" } },
+        name: "Простая тёмная",
+        mainSlide: {
+            background: { type: TypeBackground.Color, color: "#1c1c1c" },
+            textStyle: { color: "#ffffff" },
+        },
+        allSlides: {
+            background: { type: TypeBackground.Color, color: "#1c1c1c" },
+            textStyle: { color: "#ffffff" },
+        },
     },
     {
         id: "3",
-        name: "яркая",
-        mainSlide: { background: { type: TypeBackground.Color, color: "#7ec532" } },
-        allSlides: { background: { type: TypeBackground.Picture, src: "" } },
+        name: "Модель",
+        mainSlide: {
+            background: { type: TypeBackground.Picture, src: "/themes/Модель_главная.png" },
+            textStyle: { color: "#000000" },
+        },
+        allSlides: {
+            background: { type: TypeBackground.Picture, src: "/themes/Модель_основа.png" },
+            textStyle: { color: "#000000" },
+        },
     },
     {
         id: "4",
-        name: "светлая",
-        mainSlide: { background: { type: TypeBackground.Color, color: "#cc1628" } },
-        allSlides: { background: { type: TypeBackground.Color, color: "#ffffff" } },
+        name: "Поток",
+        mainSlide: {
+            background: { type: TypeBackground.Picture, src: "/themes/Поток_главная.png" },
+            textStyle: { color: "#000000" },
+        },
+        allSlides: {
+            background: { type: TypeBackground.Picture, src: "/themes/Поток_основа.png" },
+            textStyle: { color: "#000000" },
+        },
     },
     {
         id: "5",
-        name: "темная",
-        mainSlide: { background: { type: TypeBackground.Color, color: "#d5dae2" } },
-        allSlides: { background: { type: TypeBackground.Color, color: "#54b9ff" } },
+        name: "Мята",
+        mainSlide: {
+            background: { type: TypeBackground.Picture, src: "/themes/Мята_главная.png" },
+            textStyle: { color: "#ffffff" },
+        },
+        allSlides: {
+            background: { type: TypeBackground.Picture, src: "/themes/Мята_основа.png" },
+            textStyle: { color: "#000000" },
+        },
     },
     {
         id: "6",
-        name: "светлая",
-        mainSlide: { background: { type: TypeBackground.Color, color: "#cc1628" } },
-        allSlides: { background: { type: TypeBackground.Color, color: "#ffffff" } },
-    },
-    {
-        id: "7",
-        name: "темная",
-        mainSlide: { background: { type: TypeBackground.Color, color: "#d5dae2" } },
-        allSlides: { background: { type: TypeBackground.Color, color: "#54b9ff" } },
-    },
-    {
-        id: "8",
-        name: "светлая",
-        mainSlide: { background: { type: TypeBackground.Color, color: "#cc1628" } },
-        allSlides: { background: { type: TypeBackground.Color, color: "#ffffff" } },
-    },
-    {
-        id: "9",
-        name: "темная",
-        mainSlide: { background: { type: TypeBackground.Color, color: "#d5dae2" } },
-        allSlides: { background: { type: TypeBackground.Color, color: "#54b9ff" } },
-    },
-    {
-        id: "10",
-        name: "светлая",
-        mainSlide: { background: { type: TypeBackground.Color, color: "#cc1628" } },
-        allSlides: { background: { type: TypeBackground.Color, color: "#ffffff" } },
-    },
-    {
-        id: "11",
-        name: "темная",
-        mainSlide: { background: { type: TypeBackground.Color, color: "#d5dae2" } },
-        allSlides: { background: { type: TypeBackground.Color, color: "#54b9ff" } },
-    },
-    {
-        id: "12",
-        name: "яркая",
-        mainSlide: { background: { type: TypeBackground.Color, color: "#7ec532" } },
-        allSlides: { background: { type: TypeBackground.Picture, src: "" } },
+        name: "Небо",
+        mainSlide: {
+            background: { type: TypeBackground.Picture, src: "/themes/Небо_главная.png" },
+            textStyle: { color: "#ffffff" },
+        },
+        allSlides: {
+            background: { type: TypeBackground.Picture, src: "/themes/Небо_основа.png" },
+            textStyle: { color: "#000000" },
+        },
     },
 ];

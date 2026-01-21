@@ -5,7 +5,6 @@ type Image = DefaultObj & {
     type: TypeObject.Image;
     src: string;
     base64?: string;
-    // fileId?: string;
 };
 
 function createImage(src: string, size: Size, position: Position, base64: string): Image {
@@ -17,7 +16,6 @@ function createImage(src: string, size: Size, position: Position, base64: string
         rotation: 0,
         src: src,
         base64: base64,
-        // fileId: fileId,
     };
 }
 

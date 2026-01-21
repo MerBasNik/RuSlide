@@ -1,7 +1,6 @@
-import { type Background, setBackgroundColor } from "../Background/Background.ts";
+import { type Background, setBackgroundColor, type Theme } from "../Background/Background.ts";
 import { type SlideObject } from "../SlideObject/DefaultObject.ts";
 import { generateId } from "./Id.ts";
-import type { Theme } from "../../../components/ThemeBar/consts.ts";
 
 type Slide = {
     id: string;

@@ -1,5 +1,5 @@
 import { useCallback, useRef } from "react";
-import { exportSlidesToPDF, type PDFExportOptions } from "../../services/PDFExport/PDFExport.tsx";
+import { exportSlidesToPDF } from "../../services/PDFExport/PDFExport.tsx";
 import type { Slide } from "../store/types/Presentation/Slide.ts";
 
 export const usePDFExport = () => {
@@ -9,11 +9,11 @@ export const usePDFExport = () => {
         slidesData.current = slides;
     }, []);
 
-    const exportToPDF = useCallback(async (options: PDFExportOptions = {}) => {
+    const exportToPDF = useCallback(async (fileName: string) => {
         if (slidesData.current.length === 0) {
             throw new Error("Нет слайдов для экспорта");
         }
-        await exportSlidesToPDF(slidesData.current, options);
+        await exportSlidesToPDF({ slides: slidesData.current, fileName });
     }, []);
 
     return {

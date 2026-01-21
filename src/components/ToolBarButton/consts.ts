@@ -45,7 +45,6 @@ export const createToolBarButtons = ({
                 { x: 100, y: 100 },
                 parseData.base64
             );
-
             if (slideId) {
                 dispatch(addObject({ slideId, obj: image }));
             }
@@ -67,7 +66,6 @@ export const createToolBarButtons = ({
         dispatch(addObject({ slideId, obj: newText }));
     };
     const handleAddSlide = () => {
-        console.log("askldjflkas");
         const slide = createSlide(theme);
         dispatch(addSlide(slide));
     };

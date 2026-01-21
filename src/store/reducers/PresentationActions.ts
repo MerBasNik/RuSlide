@@ -1,8 +1,7 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { Slide } from "../types/Presentation/Slide.ts";
-import type { Background } from "../types/Background/Background.ts";
+import type { Background, Theme } from "../types/Background/Background.ts";
 import type { Presentation } from "../types/Presentation/Presentation.ts";
-import type { Theme } from "../../components/ThemeBar/consts.ts";
 
 export const setPresentationAction = (_state: Presentation, action: PayloadAction<Presentation>) => {
     return action.payload;

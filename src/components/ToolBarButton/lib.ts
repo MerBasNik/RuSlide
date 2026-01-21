@@ -40,7 +40,6 @@ export const uploadImage = (): Promise<string | null> => {
                         "69367bcc001ade42357f",
                         createdFile.$id
                     );
-                    // const fileView = storage.getFileView("69367bcc001ade42357f", createdFile.$id);
                     const dimensions = await getImageDimensionsFromFile(file);
                     const base64 = await fileToBase64(file);
                     const data = {
@@ -50,7 +49,6 @@ export const uploadImage = (): Promise<string | null> => {
                     };
                     resolve(JSON.stringify(data));
                 } catch (error) {
-                    console.error("Upload failed:", error);
                     resolve(null);
                 }
             } else {

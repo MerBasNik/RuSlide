@@ -2,8 +2,13 @@ import classes from "./ThemeBar.module.css";
 import { Themes } from "./consts.ts";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../hooks/useRedux.tsx";
-import { setBackground, setTheme } from "../../store/reducers/PresentationSlice.ts";
+import {
+    setBackground,
+    setTheme,
+    updateTextStyle,
+} from "../../store/reducers/PresentationSlice.ts";
 import type { Background } from "../../store/types/Background/Background.ts";
+import { TypeObject } from "../../store/types/SlideObject/DefaultObject.ts";
 
 const ThemeBar = () => {
     const dispatch = useDispatch();
@@ -16,8 +21,21 @@ const ThemeBar = () => {
         if (!slides || !slidesOrder || slidesOrder.length === 0) return;
         const firstSlideId = slidesOrder[0];
         const firstSlide = slides[firstSlideId];
+        const firstSlideObjectsOrder = slides[firstSlideId].objectsOrder;
+        const firstSlideObjects = slides[firstSlideId].objects;
 
         if (firstSlide) {
+            firstSlideObjectsOrder.map(objectId => {
+                if (firstSlideObjects[objectId].type === TypeObject.Text) {
+                    dispatch(
+                        updateTextStyle({
+                            slideId: firstSlideId,
+                            objectId: objectId,
+                            styleUpdates: { ...theme.mainSlide.textStyle },
+                        })
+                    );
+                }
+            });
             dispatch(
                 setBackground({
                     slideId: firstSlideId,
@@ -27,6 +45,19 @@ const ThemeBar = () => {
         }
 
         slidesOrder.slice(1).forEach(slideId => {
+            const objectsOrder = slides[slideId].objectsOrder;
+            const objects = slides[slideId].objects;
+            objectsOrder.map(objectId => {
+                if (objects[objectId].type === TypeObject.Text) {
+                    dispatch(
+                        updateTextStyle({
+                            slideId,
+                            objectId,
+                            styleUpdates: { ...theme.allSlides.textStyle },
+                        })
+                    );
+                }
+            });
             dispatch(
                 setBackground({
                     slideId: slideId,
@@ -52,12 +83,13 @@ const ThemeBar = () => {
     return (
         <div className={classes.themeContainer}>
             {Themes.map(theme => (
-                <div
-                    className={classes.themeItem}
-                    onClick={() => changeTheme(theme.id)}
-                    key={theme.id}
-                    style={setStyleBackground(theme.mainSlide.background)}
-                >
+                <div key={theme.id} className={classes.themeItem}>
+                    <p className={classes.themeTitle}>{theme.name}</p>
+                    <div
+                        className={classes.themeBackground}
+                        onClick={() => changeTheme(theme.id)}
+                        style={setStyleBackground(theme.mainSlide.background)}
+                    />
                 </div>
             ))}
         </div>
