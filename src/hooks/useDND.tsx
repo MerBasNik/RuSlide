@@ -62,6 +62,8 @@ export const useDragAndDrop = ({ typeDND, onDragEnd, containerRef }: DragConfig)
                     visible: true,
                     item: item,
                 });
+                // Запоминаем начальную позицию мыши для слайдов
+                startMousePos.current = { x: e.clientX, y: e.clientY };
             }
         },
         [containerRef, typeDND]
@@ -70,8 +72,10 @@ export const useDragAndDrop = ({ typeDND, onDragEnd, containerRef }: DragConfig)
     const onMove = useCallback(
         (e: MouseEvent) => {
             if (typeDND === "slide") {
-                const newX = e.clientX - 50;
-                const newY = e.clientY - 50;
+                // Обновляем позицию превью с отступом от курсора
+                const newX = e.clientX - 88; // Половина ширины миниатюры
+                const newY = e.clientY - 49; // Половина высоты миниатюры
+
                 requestAnimationFrame(() => {
                     setDragPreview(prev => ({
                         ...prev,
@@ -80,13 +84,17 @@ export const useDragAndDrop = ({ typeDND, onDragEnd, containerRef }: DragConfig)
                     }));
                 });
 
+                // Находим элемент под курсором
                 const elements = document.elementsFromPoint(e.clientX, e.clientY);
                 const onDropElement = elements.find(el => el.hasAttribute("data-drag-id"));
+
                 if (onDropElement) {
                     const targetId = onDropElement.getAttribute("data-drag-id");
-                    if (targetId) {
+                    if (targetId && targetId !== dragPreview.item?.id) {
                         setTargetId(targetId);
                     }
+                } else {
+                    setTargetId("");
                 }
             }
 
@@ -122,13 +130,14 @@ export const useDragAndDrop = ({ typeDND, onDragEnd, containerRef }: DragConfig)
                 }
             }
         },
-        [containerRef, typeDND]
+        [containerRef, typeDND, dragPreview.item?.id]
     );
 
     const onDrop = useCallback(() => {
         if (isDragging) {
             if (typeDND === "slide") {
-                onDragEnd(dragElementsId.current, targetId);
+                // Вызываем onDragEnd с ID перетаскиваемых слайдов и целевым ID
+                onDragEnd(dragElementsId.current, targetId || "");
             }
             if (typeDND === "objects") {
                 onDragEnd(dragElementsId.current);

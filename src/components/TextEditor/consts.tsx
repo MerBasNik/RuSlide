@@ -1,15 +1,9 @@
 export const COMMON_FONTS = [
-    "Arial",
-    "Helvetica",
-    "Times New Roman",
-    "Georgia",
-    "Courier New",
-    "Verdana",
-    "Tahoma",
-    "Trebuchet MS",
+    "Open Sans",
+    "Montserrat",
+    "Roboto"
 ];
 export const FONT_SIZE_OPTIONS = [8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 64];
-export const FONT_WEIGHT_OPTIONS = [100, 200, 300, 400, 500, 600, 700, 800, 900, "normal", "bold"];
 export const LINE_HEIGHT_OPTIONS = [1, 1.2, 1.4, 1.6, 1.8, 2];
 export const COLORS = [
     "#000000",

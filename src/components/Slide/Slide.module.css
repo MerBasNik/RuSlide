@@ -26,21 +26,16 @@
     background: white;
 }
 
-[data-drag-id] {
-    transition: all 0.2s ease;
-    cursor: grab;
-}
-
-[data-drag-id]:hover {
-    border-color: #007bff;
-}
-
-.selectionBoundingBox {
+.textEditArea {
     position: absolute;
-    border: 2px dashed #007bff;
-    background-color: rgba(0, 123, 255, 0.1);
-    pointer-events: none;
-    z-index: 99;
+    resize: none;
     box-sizing: border-box;
-    display: none;
+    overflow: hidden;
+    border: none;
+    outline: none;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 0;
+    padding: 0;
+    background: transparent;
 }

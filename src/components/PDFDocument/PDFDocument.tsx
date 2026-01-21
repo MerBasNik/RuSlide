@@ -24,7 +24,10 @@ const PDFDocumentComponent: React.FC<PDFDocumentProps> = ({ slides }) => {
                             />
                         )}
                         {slide.background.type === "picture" && (
-                            <Image src={slide.background.base64} style={styles.background} />
+                            <Image
+                                src={slide.background.base64 || slide.background.src}
+                                style={styles.background}
+                            />
                         )}
                         {slide.objectsOrder.map(objectId => {
                             const object = slide.objects[objectId];
@@ -44,12 +47,10 @@ const PDFDocumentComponent: React.FC<PDFDocumentProps> = ({ slides }) => {
                                                 position: "absolute",
                                                 left: `${x}px`,
                                                 top: `${y}px`,
-                                                width: `${width}px`,
-                                                height: `${height}px`,
                                                 fontSize: object.style.fontSize,
                                                 color: object.style.color || "#000000",
                                                 textAlign: object.style.textAlign || "left",
-                                                // fontFamily: object.style.fontFamily,
+                                                fontFamily: "Open Sans",
                                             }}
                                         >
                                             {object.content}

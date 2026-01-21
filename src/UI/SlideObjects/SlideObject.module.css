@@ -1,9 +1,9 @@
 .slideObj, .textElement {
     position: absolute;
     transition: all 0.15s ease;
-    border: 2px solid transparent;
-    box-sizing: border-box;
-    user-select: none;
+    /*border: 2px solid transparent;*/
+    /*box-sizing: border-box;*/
+    /*user-select: none;*/
 }
 
 .slideObj.selected, .textElement.selected {
@@ -23,17 +23,15 @@
 .textElement {
     white-space: pre-wrap;
     word-break: break-word;
-    line-height: 1.4;
     display: flex;
     align-items: flex-start;
-    padding: 8px;
     min-width: 50px;
     min-height: 20px;
     overflow: hidden;
 }
 
 
-.slideObj:hover:not(.selected),
-.textElement:hover:not(.selected) {
+.slideObj:hover:not(.selected) {
     border: 1px solid #ccc;
+    cursor: pointer;
 }

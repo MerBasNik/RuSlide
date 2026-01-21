@@ -1,36 +1,82 @@
 import { Font } from "@react-pdf/renderer";
 
-// Регистрируем все необходимые шрифты
 const registerFonts = () => {
     try {
         Font.register({
-            family: "Helvetica",
+            family: "Roboto",
             fonts: [
                 {
-                    src: "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf",
+                    src: "/fonts/Roboto/static/Roboto-Regular.ttf",
                     fontWeight: "normal",
                 },
                 {
-                    src: "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-bold-webfont.ttf",
+                    src: "/fonts/Roboto/static/Roboto-Regular.ttf",
+                    fontWeight: "normal",
+                },
+                {
+                    src: "/fonts/Roboto/static/Roboto-Bold.ttf",
                     fontWeight: "bold",
+                },
+                {
+                    src: "/fonts/Roboto/static/Roboto-Italic.ttf",
+                    fontWeight: "normal",
+                    fontStyle: "italic",
+                },
+                {
+                    src: "/fonts/Roboto/static/Roboto-Regular.ttf",
+                    fontWeight: "normal",
+                },
+                {
+                    src: "/fonts/Roboto/static/Roboto-Bold.ttf",
+                    fontWeight: "bold",
+                },
+                {
+                    src: "/fonts/Roboto/static/Roboto-Italic.ttf",
+                    fontWeight: "normal",
+                    fontStyle: "italic",
                 },
             ],
         });
 
         Font.register({
-            family: "Times-Roman",
-            src: "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf",
+            family: "Open Sans",
+            fonts: [
+                {
+                    src: "/fonts/Open_Sans/static/OpenSans-Regular.ttf",
+                    fontWeight: "normal",
+                },
+                {
+                    src: "/fonts/Open_Sans/static/OpenSans-Bold.ttf",
+                    fontWeight: "bold",
+                },
+                {
+                    src: "/fonts/Open_Sans/static/OpenSans-Italic.ttf",
+                    fontWeight: "normal",
+                    fontStyle: "italic",
+                },
+            ],
         });
 
-        // Или используем встроенные псевдонимы
         Font.register({
-            family: "sans-serif",
-            src: "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf",
+            family: "Montserrat",
+            fonts: [
+                {
+                    src: "/fonts/Montserrat/static/Montserrat-Regular.ttf",
+                    fontWeight: "normal",
+                },
+                {
+                    src: "/fonts/Montserrat/static/Montserrat-Bold.ttf",
+                    fontWeight: "bold",
+                },
+                {
+                    src: "/fonts/Montserrat/static/Montserrat-Italic.ttf",
+                    fontWeight: "normal",
+                    fontStyle: "italic",
+                },
+            ],
         });
-
-        console.log("Fonts registered successfully");
     } catch (error) {
-        console.warn("Font registration failed:", error);
+        console.warn("Ошибка при регистрации шрифтов:", error);
     }
 };
 

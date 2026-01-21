@@ -1,7 +1,7 @@
 import classes from "./TextEditorToolbar.module.css";
 import { useAppSelector } from "../../hooks/useRedux.tsx";
-import { COMMON_FONTS, FONT_SIZE_OPTIONS, LINE_HEIGHT_OPTIONS } from "./consts.ts";
-import { TextEditorHandlers } from "./lib.ts";
+import { COMMON_FONTS, FONT_SIZE_OPTIONS, LINE_HEIGHT_OPTIONS } from "./consts.tsx";
+import { TextEditorHandlers } from "./lib.tsx";
 import BackgroundDropdown from "../BackgroundDropDown/BackgroundDropDown.tsx";
 import ToolBarButton from "../ToolBarButton/ToolBarButton.tsx";
 import { useState } from "react";
@@ -95,29 +95,6 @@ export const TextEditToolbar = () => {
                 </select>
             </div>
 
-            {/*<div className={classes.toolbarGroup}>*/}
-            {/*    <select*/}
-            {/*        value={currentObject?.style.fontWeight || "normal"}*/}
-            {/*        onChange={e => {*/}
-            {/*            const value = e.target.value;*/}
-            {/*            handleFontWeightChange(*/}
-            {/*                value === "normal"*/}
-            {/*                    ? "normal"*/}
-            {/*                    : value === "bold"*/}
-            {/*                      ? "bold"*/}
-            {/*                      : Number(value)*/}
-            {/*            );*/}
-            {/*        }}*/}
-            {/*        className={classes.select}*/}
-            {/*    >*/}
-            {/*        {FONT_WEIGHT_OPTIONS.map(weight => (*/}
-            {/*            <option key={weight.toString()} value={weight}>*/}
-            {/*                {typeof weight === "number" ? `${weight}` : weight}*/}
-            {/*            </option>*/}
-            {/*        ))}*/}
-            {/*    </select>*/}
-            {/*</div>*/}
-
             <div className={classes.toolbarGroup}>
                 <button
                     onClick={() =>
@@ -154,26 +131,6 @@ export const TextEditToolbar = () => {
                 </button>
             </div>
 
-            {/*<div className={classes.toolbarGroup}>*/}
-            {/*    <input*/}
-            {/*        type="color"*/}
-            {/*        value={currentObject?.style.color || "#000000"}*/}
-            {/*        onChange={e => handleColorChange(e.target.value)}*/}
-            {/*        className={classes.colorPicker}*/}
-            {/*        title="Цвет текста"*/}
-            {/*    />*/}
-            {/*    <div className={classes.colorPalette}>*/}
-            {/*        {COLORS.map(color => (*/}
-            {/*            <button*/}
-            {/*                key={color}*/}
-            {/*                className={classes.colorSwatch}*/}
-            {/*                style={{ backgroundColor: color }}*/}
-            {/*                onClick={() => handleColorChange(color)}*/}
-            {/*                title={color}*/}
-            {/*            />*/}
-            {/*        ))}*/}
-            {/*    </div>*/}
-            {/*</div>*/}
             <ToolBarButton
                 className={classes.toolbarGroup}
                 clickHandle={toggleBackgroundDropdown}

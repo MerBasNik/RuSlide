@@ -12,12 +12,10 @@ const LoginForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    // const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
-        // setIsLoading(true);
         try {
             const user = await login(email, password);
             if (user) {
@@ -29,8 +27,6 @@ const LoginForm = () => {
             }
         } catch (error: any) {
             setError("Login failed: " + error.message);
-        } finally {
-            // setIsLoading(false);
         }
     };
 

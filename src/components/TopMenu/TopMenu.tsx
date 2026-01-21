@@ -1,7 +1,6 @@
 import classes from "./TopMenu.module.css";
 import Input from "../../UI/Input/Input.tsx";
 import ToolBarList from "../ToolBarButton/ToolBarList.tsx";
-import MenuList from "../MenuButton/MenuList.tsx";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux.tsx";
 import { setPresentationName } from "../../store/reducers/PresentationSlice.ts";
 import { undo, redo } from "../../store/reducers/historySlice.ts";
@@ -50,10 +49,7 @@ const TopMenu = ({ onLogout }: TopMenuProps) => {
                     <NavLink to={"/ruslide/home"}>
                         <img src="/images/logo.png" alt="logo" className={classes.logo} />
                     </NavLink>
-                    <div className={classes.menuBlock}>
-                        <Input onNameChange={handleNameChange} presentationName={name} />
-                        <MenuList />
-                    </div>
+                    <Input onNameChange={handleNameChange} presentationName={name} />
                 </div>
                 <div className={classes.extraBlock}>
                     <div

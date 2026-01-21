@@ -14,7 +14,6 @@ import {
 } from "../../store/reducers/PresentationSlice.ts";
 import { type Position } from "../../store/types/SlideObject/DefaultObject.ts";
 import { createSlide } from "../../store/types/Presentation/Slide.ts";
-import { updateSelectionBox } from "./utils.ts";
 
 type SlideProps = {
     slideId: string;
@@ -26,7 +25,6 @@ export const Slide = ({ slideId }: SlideProps) => {
     const [isEditingText, setIsEditingText] = useState(false);
     const [textEditValue, setTextEditValue] = useState("");
     const slideRef = useRef<HTMLDivElement>(null);
-    const groupBoundingBoxRef = useRef<HTMLDivElement>(null);
     const textEditRef = useRef<HTMLTextAreaElement>(null);
 
     const dispatch = useAppDispatch();
@@ -35,7 +33,6 @@ export const Slide = ({ slideId }: SlideProps) => {
     const objects = slide?.objects;
     const theme = presentation.theme;
 
-    // Находим текущий текстовый объект
     const currentTextObject =
         currObject && objects?.[currObject]?.type === "text" ? objects[currObject] : null;
 
@@ -59,19 +56,14 @@ export const Slide = ({ slideId }: SlideProps) => {
         dispatch(setPosition({ slideId, positions: positionsMap }));
     };
 
-    const updateSelectionBoundingBox = updateSelectionBox(
-        groupBoundingBoxRef,
-        selectedObjects,
-        slideRef
-    );
-
     const { onDrag, isDragging } = useDragAndDrop({
         typeDND: "objects",
         onDragEnd,
         containerRef: slideRef,
     });
 
-    const { isResizing, handleResizeStart } = useResize({ slideRef, slideId });
+    const { handleResizeStart } = useResize({ slideRef, slideId });
+    const objectRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
     const backgroundStyle: React.CSSProperties = {};
     if (slide?.background.type === "color") {
@@ -121,7 +113,6 @@ export const Slide = ({ slideId }: SlideProps) => {
 
     const handleObjectClick = useCallback(
         (elementId: string, event: React.MouseEvent) => {
-            // Если сейчас редактируем текст, сохраняем изменения
             if (isEditingText) {
                 handleTextEditSave();
             }
@@ -218,38 +209,21 @@ export const Slide = ({ slideId }: SlideProps) => {
     useEffect(() => {
         if (isEditingText && textEditRef.current && currentTextObject) {
             const textarea = textEditRef.current;
-            textarea.style.height = "auto";
-            textarea.style.height = textarea.scrollHeight + "px";
+            const objectElement = objectRefs.current[currObject];
 
-            const objectElement = document.querySelector(`[data-drag-id="${currObject}"]`);
             if (objectElement) {
                 const rect = objectElement.getBoundingClientRect();
                 const slideRect = slideRef.current?.getBoundingClientRect();
+
                 if (slideRect) {
                     textarea.style.left = `${rect.left - slideRect.left}px`;
                     textarea.style.top = `${rect.top - slideRect.top}px`;
                     textarea.style.width = `${rect.width}px`;
-                    textarea.style.minHeight = `${rect.height}px`;
+                    textarea.style.height = `${rect.height}px`;
                 }
             }
         }
-    }, [isEditingText, textEditValue, currentTextObject, currObject]);
-
-    useEffect(() => {
-        if (selectedObjects.length > 0) {
-            updateSelectionBoundingBox();
-        } else if (groupBoundingBoxRef.current) {
-            groupBoundingBoxRef.current.style.display = "none";
-        }
-    }, [selectedObjects, updateSelectionBoundingBox]);
-
-    useEffect(() => {
-        if (isDragging || isResizing) {
-            updateSelectionBoundingBox();
-            const interval = setInterval(updateSelectionBoundingBox, 5);
-            return () => clearInterval(interval);
-        }
-    }, [isDragging, isResizing, updateSelectionBoundingBox]);
+    }, [isEditingText, currObject]);
 
     const onCreateSlide = () => {
         const slide = createSlide(theme);
@@ -265,15 +239,6 @@ export const Slide = ({ slideId }: SlideProps) => {
             style={backgroundStyle}
             onClick={handleSlideClick}
         >
-            <div
-                ref={groupBoundingBoxRef}
-                className={classes.selectionBoundingBox}
-                style={{
-                    display: selectedObjects.length > 0 ? "block" : "none",
-                }}
-            />
-
-            {/* Поле для редактирования текста */}
             {isEditingText && currentTextObject && (
                 <textarea
                     ref={textEditRef}
@@ -314,6 +279,7 @@ export const Slide = ({ slideId }: SlideProps) => {
                     if (element.type === "image") {
                         return (
                             <ImageObject
+                                ref={el => (objectRefs.current[element.id] = el)}
                                 key={element.id}
                                 element={element}
                                 isSelected={isSelected}
@@ -330,13 +296,13 @@ export const Slide = ({ slideId }: SlideProps) => {
                     if (element.type === "text") {
                         const handleDoubleClick = (e: React.MouseEvent) => {
                             if (e.detail === 2) {
-                                // Двойной клик
                                 handleTextEditStart(element.id);
                             }
                         };
 
                         return (
                             <TextObject
+                                ref={el => (objectRefs.current[element.id] = el)}
                                 key={element.id}
                                 slideId={slideId}
                                 element={element}
@@ -345,6 +311,7 @@ export const Slide = ({ slideId }: SlideProps) => {
                                 isCurrent={isCurrent}
                                 dragItem={dragItem}
                                 onDrag={onDrag}
+                                isEditing={isEditingText}
                                 handleObjectClick={(id, e) => {
                                     handleObjectClick(id, e);
                                     handleDoubleClick(e);

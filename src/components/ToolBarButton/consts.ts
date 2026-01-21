@@ -56,7 +56,7 @@ export const createToolBarButtons = ({
         const newStyles = createTextStyle({
             fontSize: 20,
             fontWeight: "normal",
-            fontFamily: "sans-serif",
+            fontFamily: "Open Sans",
             fontStyle: "normal",
             lineHeight: 1,
             color: "black",

@@ -3,8 +3,10 @@ import { BaseObject } from "./BaseObject";
 import { type SlideObject } from "../../store/types/SlideObject/DefaultObject.ts";
 import type { ResizeDirection } from "../ResizeHandles/ResizeHandle.tsx";
 import type { DragItem } from "../../hooks/useDND.tsx";
+import type { Ref } from "react";
 
 interface ImageObjectProps {
+    ref: Ref<HTMLDivElement>;
     element: SlideObject;
     isSelected: boolean;
     isDragging: boolean;
@@ -17,10 +19,10 @@ interface ImageObjectProps {
         direction: ResizeDirection,
         element: SlideObject
     ) => void;
-    style?: React.CSSProperties;
 }
 
 export const ImageObject = ({
+    ref,
     element,
     isSelected,
     isDragging,
@@ -29,10 +31,10 @@ export const ImageObject = ({
     onDrag,
     dragItem,
     onResizeStart,
-    style,
 }: ImageObjectProps) => {
     return (
         <BaseObject
+            ref={ref}
             element={element}
             isSelected={isSelected}
             isDragging={isDragging}
@@ -41,7 +43,6 @@ export const ImageObject = ({
             handleObjectClick={handleObjectClick}
             onResizeStart={onResizeStart}
             dragItem={dragItem}
-            style={style}
         >
             <img
                 src={element.type == "image" ? element.src : ""}

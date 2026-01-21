@@ -1,5 +1,6 @@
 import type { Slide } from "../../store/types/Presentation/Slide.ts";
 import type { SlideObject } from "../../store/types/SlideObject/DefaultObject.ts";
+import classes from "./SlideThumbnail.module.css";
 
 interface SlideThumbnailProps {
     slide: Slide | null;
@@ -9,7 +10,7 @@ interface SlideThumbnailProps {
 }
 
 export const SlideThumbnail = ({ slide, objects, width, height }: SlideThumbnailProps) => {
-    const scale = width / 800;
+    const scale = width / 960;
     const renderBackground = () => {
         if (slide?.background.type === "color") {
             return <rect width={width} height={height} fill={slide.background.color} />;
@@ -53,6 +54,7 @@ export const SlideThumbnail = ({ slide, objects, width, height }: SlideThumbnail
 
             return (
                 <text
+                    className={classes.text}
                     key={object.id}
                     x={x + 4 * scale}
                     y={y + fontSize}

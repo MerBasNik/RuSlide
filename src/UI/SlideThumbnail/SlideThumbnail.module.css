@@ -3,8 +3,12 @@
     pointer-events: none;
     z-index: 1000;
     opacity: 0.8;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    padding: 8px;
+    border: 2px solid #2e86ba;
     background: white;
+}
+
+.text {
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow: hidden;
 }

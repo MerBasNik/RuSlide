@@ -38,10 +38,8 @@ const authService = () => {
     const handleLogout = async () => {
         try {
             await account.deleteSession('current');
-            console.log("Account logged out");
             return true;
         } catch (error) {
-            console.error("Logout error:", error);
             return false;
         }
     };

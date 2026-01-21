@@ -5,6 +5,7 @@ import classes from "./SlideObject.module.css";
 import type { DragItem } from "../../hooks/useDND.tsx";
 
 interface BaseObjectProps {
+    ref: React.Ref<HTMLElement>;
     element: SlideObject;
     isSelected: boolean;
     isDragging: boolean;
@@ -22,6 +23,7 @@ interface BaseObjectProps {
 }
 
 export const BaseObject = ({
+    ref,
     element,
     isSelected,
     isDragging,
@@ -37,6 +39,7 @@ export const BaseObject = ({
 
     return (
         <div
+            ref={ref}
             data-drag-id={element.id}
             className={`${classes.slideObj} ${
                 isSelected ? classes.selected : ""

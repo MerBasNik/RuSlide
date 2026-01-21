@@ -25,7 +25,7 @@ const SlideBar = () => {
     const getSlideObjects = useCallback(
         (slideId: string) => {
             const slide = slides[slideId];
-            return slide.objects;
+            return slide ? slide.objects : {};
         },
         [slides]
     );
@@ -40,10 +40,12 @@ const SlideBar = () => {
         [dispatch, selectedSlides]
     );
 
-    const onDragEnd = (dragIds: string[], targetId?: string) => {
-        if (!targetId) return;
-        if (!dragIds.includes(targetId) && targetId !== "") {
+    const onDragEnd = useCallback(
+        (dragIds: string[], targetId?: string) => {
+            if (!targetId || dragIds.includes(targetId)) return;
+
             const currentOrder = [...slidesOrder];
+
             const orderedDragIds = currentOrder.filter(id => dragIds.includes(id));
             const withoutDragged = currentOrder.filter(id => !dragIds.includes(id));
             const targetIndex = withoutDragged.indexOf(targetId);
@@ -54,10 +56,12 @@ const SlideBar = () => {
                     ...orderedDragIds,
                     ...withoutDragged.slice(targetIndex),
                 ];
-                setSlidesOrder(newOrder);
+
+                dispatch(setSlidesOrder(newOrder));
             }
-        }
-    };
+        },
+        [dispatch, slidesOrder]
+    );
 
     const { onDrag, dragPreview } = useDragAndDrop({
         onDragEnd,
@@ -75,7 +79,8 @@ const SlideBar = () => {
         (slideId: string, event: React.MouseEvent) => {
             event.stopPropagation();
             let newSelectedSlides: string[] = [];
-            if (event.metaKey) {
+
+            if (event.ctrlKey || event.metaKey) {
                 if (selectedSlides.includes(slideId)) {
                     newSelectedSlides = selectedSlides.filter(id => id !== slideId);
                     if (slideId === currentSlide && newSelectedSlides.length > 0) {
@@ -112,7 +117,9 @@ const SlideBar = () => {
 
             selectedSlidesRef.current = newSelectedSlides;
             dispatch(selectSlide(newSelectedSlides));
-            dispatch(setCurrentSlide(newSelectedSlides[0]));
+            if (newSelectedSlides.length > 0) {
+                dispatch(setCurrentSlide(newSelectedSlides[0]));
+            }
         },
         [selectedSlides, currentSlide, dispatch, slidesOrder]
     );
@@ -153,7 +160,6 @@ const SlideBar = () => {
         try {
             await exportToPDF("моя_презентация.pdf");
         } catch (error) {
-            console.error("Ошибка экспорта PDF:", error);
             alert("Не удалось экспортировать PDF. Проверьте консоль для деталей.");
         } finally {
             setIsExporting(false);
@@ -162,6 +168,14 @@ const SlideBar = () => {
 
     return (
         <div className={classes.slideBar} onClick={handleSlideBarClick}>
+            <button
+                onClick={handleExportPDF}
+                disabled={isExporting}
+                className={classes.exportButton}
+            >
+                {isExporting ? "Экспортируем..." : "Скачать PDF"}
+            </button>
+
             <DragPreview
                 visible={dragPreview.visible}
                 position={{
@@ -173,11 +187,11 @@ const SlideBar = () => {
                 item={dragPreview.item}
                 renderThumbnail={renderThumbnail}
             />
-            <button onClick={handleExportPDF} disabled={isExporting}>
-                {isExporting ? "Экспортируем..." : "Скачать PDF"}
-            </button>
+
             {slidesOrder.map((id, index) => {
                 const slide = slides[id];
+                if (!slide) return null;
+
                 const isSelected = selectedSlides.includes(id);
                 const isMultiple = selectedSlides.length > 1 && isSelected;
 
@@ -190,18 +204,17 @@ const SlideBar = () => {
 
                 return (
                     <div key={id} className={classes.container}>
-                        <div className={classes.slideNumber}>{dragItem.data.index + 1}</div>
+                        <div className={classes.slideNumber}>{index + 1}</div>
                         <div
                             data-drag-id={id}
+                            onClick={e => handleSlideClick(id, e)}
                             onMouseDown={e => onDrag(e, dragItem)}
-                            draggable={true}
-                            key={id}
                             className={`${classes.slideBox} ${isSelected ? classes.selected : ""}`}
                             style={{
                                 width: `${widthThumbnail}px`,
                                 height: `${heightThumbnail}px`,
+                                cursor: "grab",
                             }}
-                            onClick={e => handleSlideClick(id, e)}
                         >
                             {renderThumbnail(dragItem)}
                         </div>

@@ -7,7 +7,7 @@ import type { Slide, SlideObject } from "../../store/types/Presentation/Slide.ts
 const SlideShow: React.FC = () => {
     const navigate = useNavigate();
     const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-
+    const scale = 1920 / 960;
     const presentation = useAppSelector(state => state.presentation);
     const slides = Object.entries(presentation?.slides).map(([_, slide]) => slide);
 
@@ -76,16 +76,26 @@ const SlideShow: React.FC = () => {
         backgroundStyle.backgroundPosition = "center";
     }
 
+    const applyObjectStyles = (object: SlideObject) => {
+        const baseStyle = {
+            position: "absolute",
+            left: `${object.position.x}px`,
+            top: `${object.position.y}px`,
+            width: `${object.size.width}px`,
+            height: `${object.size.height}px`,
+            transformOrigin: "center center",
+        } as const;
+
+        return {
+            ...baseStyle,
+            transform: `scale(${scale})`,
+        };
+    };
+
     return (
         <div className={classes.slide} style={backgroundStyle}>
             {objects.map(object => {
-                const style = {
-                    position: "absolute",
-                    left: `${object.position.x}px`,
-                    top: `${object.position.y}px`,
-                    width: `${object.size.width}px`,
-                    height: `${object.size.height}px`,
-                } as const;
+                const style = applyObjectStyles(object);
 
                 switch (object.type) {
                     case "text":
@@ -104,6 +114,7 @@ const SlideShow: React.FC = () => {
                                 src={object.src}
                                 style={style}
                                 className={classes.imageObject}
+                                alt=""
                             />
                         );
                     default:
