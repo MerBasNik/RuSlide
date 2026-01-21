@@ -139,7 +139,11 @@ export const TextEditToolbar = () => {
                 Цвет
             </ToolBarButton>
             {showDropdown && (
-                <BackgroundDropdown slideId={currentSlide} onClose={() => setShowDropdown(false)} />
+                <BackgroundDropdown
+                    slideId={currentSlide}
+                    objId={currObjId}
+                    onClose={() => setShowDropdown(false)}
+                />
             )}
             <div className={classes.toolbarGroup}>
                 <select

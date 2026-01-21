@@ -6,10 +6,11 @@ import ImageSelect from "./ImageSelect.tsx";
 
 interface BackgroundDropdownProps {
     slideId: string;
+    objId: string;
     onClose?: () => void;
 }
 
-const BackgroundDropdown = ({ slideId, onClose }: BackgroundDropdownProps) => {
+const BackgroundDropdown = ({ slideId, onClose, objId }: BackgroundDropdownProps) => {
     const [selectedType, setSelectedType] = useState<"color" | "image">("color");
 
     return (
@@ -32,7 +33,7 @@ const BackgroundDropdown = ({ slideId, onClose }: BackgroundDropdownProps) => {
                 </div>
             </div>
             {selectedType === "color" ? (
-                <ColorSelect slideId={slideId} />
+                <ColorSelect slideId={slideId} objId={objId} />
             ) : (
                 <ImageSelect slideId={slideId} />
             )}

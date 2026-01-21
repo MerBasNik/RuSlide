@@ -158,11 +158,9 @@ const SlideBar = () => {
     const handleExportPDF = async () => {
         setIsExporting(true);
         try {
-            await exportToPDF("моя_презентация.pdf");
+            await exportToPDF(`${presentation.name}.pdf`);
         } catch (error) {
             alert("Не удалось экспортировать PDF. Проверьте консоль для деталей.");
-        } finally {
-            setIsExporting(false);
         }
     };
 

@@ -7,7 +7,7 @@ import type { Slide, SlideObject } from "../../store/types/Presentation/Slide.ts
 const SlideShow: React.FC = () => {
     const navigate = useNavigate();
     const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-    const scale = 1920 / 960;
+    const scale = 1500 / 960;
     const presentation = useAppSelector(state => state.presentation);
     const slides = Object.entries(presentation?.slides).map(([_, slide]) => slide);
 
@@ -79,16 +79,15 @@ const SlideShow: React.FC = () => {
     const applyObjectStyles = (object: SlideObject) => {
         const baseStyle = {
             position: "absolute",
-            left: `${object.position.x}px`,
-            top: `${object.position.y}px`,
-            width: `${object.size.width}px`,
-            height: `${object.size.height}px`,
-            transformOrigin: "center center",
+            left: `${object.position.x * scale}px`,
+            top: `${object.position.y * scale}px`,
+            width: `${object.size.width * scale}px`,
+            height: `${object.size.height * scale}px`,
+            // transformOrigin: "center center",
         } as const;
 
         return {
             ...baseStyle,
-            transform: `scale(${scale})`,
         };
     };
 
@@ -102,7 +101,15 @@ const SlideShow: React.FC = () => {
                         return (
                             <div
                                 key={object.id}
-                                style={style}
+                                style={{
+                                    color: object.style.color,
+                                    fontStyle: object.style.fontStyle,
+                                    fontSize: (object.style.fontSize || 20) * scale,
+                                    lineHeight: (object.style.lineHeight || 1) * scale,
+                                    fontWeight: object.style.fontWeight,
+                                    fontFamily: object.style.fontFamily,
+                                    ...style,
+                                }}
                                 className={classes.textObject}
                                 dangerouslySetInnerHTML={{ __html: object.content }}
                             />
@@ -112,7 +119,7 @@ const SlideShow: React.FC = () => {
                             <img
                                 key={object.id}
                                 src={object.src}
-                                style={style}
+                                style={{ ...style }}
                                 className={classes.imageObject}
                                 alt=""
                             />
