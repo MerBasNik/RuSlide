@@ -1,5 +1,9 @@
 import type { Middleware } from "@reduxjs/toolkit";
-import { updateHistory, undo, redo } from "../reducers/historySlice.ts";
+import {
+    updateHistory,
+    undo,
+    redo,
+} from "../reducers/historySlice.ts";
 import { restoreState } from "../reducers/PresentationSlice.ts";
 
 export const undoRedoMiddleware: Middleware = store => {
@@ -12,13 +16,11 @@ export const undoRedoMiddleware: Middleware = store => {
             const previousState = history.past[history.past.length - 1];
 
             next(restoreState(previousState));
-            next(
-                updateHistory({
-                    past: history.past.slice(0, -1),
-                    present: previousState,
-                    future: [history.present, ...history.future],
-                })
-            );
+            next(updateHistory({
+                past: history.past.slice(0, -1),
+                present: previousState,
+                future: [history.present, ...history.future]
+            }));
             return;
         }
 
@@ -28,13 +30,11 @@ export const undoRedoMiddleware: Middleware = store => {
             if (history.future.length === 0) return;
             const nextState = history.future[0];
             next(restoreState(nextState));
-            next(
-                updateHistory({
-                    past: [...history.past, history.present],
-                    present: nextState,
-                    future: history.future.slice(1),
-                })
-            );
+            next(updateHistory({
+                past: [...history.past, history.present],
+                present: nextState,
+                future: history.future.slice(1)
+            }));
             return;
         }
 
@@ -47,13 +47,11 @@ export const undoRedoMiddleware: Middleware = store => {
         const result = next(action);
 
         const newState = store.getState().presentation;
-        next(
-            updateHistory({
-                past: [...prevHistory.past, prevState],
-                present: newState,
-                future: [],
-            })
-        );
+        next(updateHistory({
+            past: [...prevHistory.past, prevState],
+            present: newState,
+            future: []
+        }));
         return result;
     };
 };

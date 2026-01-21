@@ -21,7 +21,7 @@ const presentationService = () => {
                 databaseId: DATABASE_ID,
                 collectionId: COLLECTION_ID,
                 documentId: data.id,
-                data: presentationData,
+                data: presentationData
             };
             try {
                 return await databases.updateDocument(
@@ -48,7 +48,11 @@ const presentationService = () => {
     };
     const getPresentation = async (id: string) => {
         try {
-            const presentationDoc = await databases.getDocument(DATABASE_ID, COLLECTION_ID, id);
+            const presentationDoc = await databases.getDocument(
+                DATABASE_ID,
+                COLLECTION_ID,
+                id
+            );
             const isValidDoc = validateDocument(presentationDoc);
             if (!isValidDoc) {
                 return false;
@@ -63,17 +67,21 @@ const presentationService = () => {
         } catch {
             return null;
         }
-    };
+    }
     const getAllPresentations = async () => {
         try {
             const user = await getUser();
             if (!user) {
                 return [];
             }
-            const presentations = await databases.listDocuments(DATABASE_ID, COLLECTION_ID, [
-                Query.equal("user_id", user.id),
-                Query.orderDesc("$createdAt"),
-            ]);
+            const presentations = await databases.listDocuments(
+                DATABASE_ID,
+                COLLECTION_ID,
+                [
+                    Query.equal('user_id', user.id),
+                    Query.orderDesc('$createdAt')
+                ]
+            );
             return presentations.documents.map(doc => {
                 const isValidDoc = validateDocument(doc);
                 if (!isValidDoc) {

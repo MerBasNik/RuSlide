@@ -3,35 +3,35 @@ import Ajv from "ajv";
 const ajv = new Ajv();
 
 const DocumentSchema = {
-    type: "object",
+    type: 'object',
     properties: {
-        $id: { type: "string" },
-        name: { type: "string" },
-        data: { type: "string" },
-        user_id: { type: "string" },
-        $createdAt: { type: "string" },
-        $updatedAt: { type: "string" },
-        $collectionId: { type: "string" },
-        $databaseId: { type: "string" },
-        $sequence: { type: "integer" },
-        $permissions: { type: "array" },
+        $id: { type: 'string' },
+        name: { type: 'string' },
+        data: { type: 'string' },
+        user_id: { type: 'string' },
+        $createdAt: { type: 'string' },
+        $updatedAt: { type: 'string' },
+        $collectionId: { type: 'string' },
+        $databaseId: { type: 'string' },
+        $sequence: { type: 'integer' },
+        $permissions: { type: 'array' },
     },
-    required: ["$id", "name", "data", "user_id"],
+    required: ['$id', 'name', 'data', 'user_id'],
     additionalProperties: false,
 } as const;
 
 const PresentationSchema = {
-    type: "object",
+    type: 'object',
     properties: {
-        id: { type: "string" },
-        name: { type: "string" },
-        slides: { type: "object" },
-        slidesOrder: { type: "array" },
-        selectedSlides: { type: "array" },
-        currentSlide: { type: "string" },
-        theme: { type: "object" },
+        id: { type: 'string' },
+        name: { type: 'string' },
+        slides: { type: 'object' },
+        slidesOrder: { type: 'array' },
+        selectedSlides: { type: 'array' },
+        currentSlide: { type: 'string' },
+        theme: { type: 'object' },
     },
-    required: ["id", "name", "slides", "slidesOrder", "selectedSlides", "currentSlide", "theme"],
+    required: ['id', 'name', 'slides', 'slidesOrder', 'selectedSlides', 'currentSlide', 'theme'],
     additionalProperties: false,
 } as const;
 
