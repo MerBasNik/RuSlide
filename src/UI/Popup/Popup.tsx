@@ -45,9 +45,7 @@ const Popup = ({ isOpen, onClose, content }: PopupProps) => {
             <div ref={popupRef} className={classes.popup}>
                 <div className={classes.header}>
                     <h3 className={classes.title}>{content}</h3>
-                    <button onClick={onClose} className={classes.closeButton}>
-                        x
-                    </button>
+                    <button onClick={onClose} className={classes.closeButton}>x</button>
                 </div>
             </div>
         </div>

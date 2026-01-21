@@ -1,5 +1,5 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { RootState } from "../index.ts";
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import type { RootState } from '../index.ts';
 
 interface HistoryState {
     past: any[];
@@ -10,23 +10,24 @@ interface HistoryState {
 const initialState: HistoryState = {
     past: [],
     present: null,
-    future: [],
+    future: []
 };
 
 const historySlice = createSlice({
-    name: "history",
+    name: 'history',
     initialState,
     reducers: {
         updateHistory: (_state, action: PayloadAction<HistoryState>) => {
+
             return action.payload;
         },
-        undo: state => {
+        undo: (state) => {
             return state;
         },
-        redo: state => {
+        redo: (state) => {
             return state;
-        },
-    },
+        }
+    }
 });
 
 export const { updateHistory, undo, redo } = historySlice.actions;

@@ -1,4 +1,4 @@
-import { account } from "./config.ts";
+import { account } from './config.ts';
 import { ID } from "appwrite";
 
 const authService = () => {
@@ -9,7 +9,7 @@ const authService = () => {
                 id: userData.$id,
                 username: userData.name,
                 email: userData.email,
-            };
+            }
             return user;
         } catch (error) {
             return null;
@@ -37,7 +37,7 @@ const authService = () => {
 
     const handleLogout = async () => {
         try {
-            await account.deleteSession("current");
+            await account.deleteSession('current');
             return true;
         } catch (error) {
             return false;
@@ -48,7 +48,7 @@ const authService = () => {
         getUser,
         register,
         login,
-        handleLogout,
+        handleLogout
     };
 };
 

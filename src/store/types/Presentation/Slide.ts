@@ -24,4 +24,6 @@ function createSlide(theme: Theme | null): Slide {
 
 export type { SlideObject, Slide };
 
-export { createSlide };
+export {
+    createSlide,
+};

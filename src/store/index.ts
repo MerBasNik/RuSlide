@@ -9,7 +9,7 @@ const loadFromLocalStorage = () => {
         const serializedState = localStorage.getItem("presentationState");
         if (serializedState === null) return undefined;
         return JSON.parse(serializedState);
-    } catch {
+    } catch (e) {
         return undefined;
     }
 };
@@ -21,17 +21,15 @@ const preloadedState = {
 export const store = configureStore({
     reducer: {
         presentation: presentationReducer,
-        history: historyReducer,
+        history: historyReducer
     },
-    middleware: getDefaultMiddleware =>
+    middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {
-                ignoredActions: ["history/updateHistory", "presentation/restoreState"],
-                ignoredPaths: ["history.past", "history.future", "history.present"],
-            },
-        })
-            .concat(undoRedoMiddleware)
-            .concat(localStorageMiddleware),
+                ignoredActions: ['history/updateHistory', 'presentation/restoreState'],
+                ignoredPaths: ['history.past', 'history.future', 'history.present']
+            }
+        }).concat(undoRedoMiddleware).concat(localStorageMiddleware),
     preloadedState,
 });
 
