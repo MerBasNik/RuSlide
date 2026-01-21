@@ -131,33 +131,23 @@ const SlideBar = () => {
         const slide = slides[dragItem.id];
         const objects = getSlideObjects(dragItem.id);
         return (
-            // <div className={classes.thumbnailContainer}>
             <SlideThumbnail
                 slide={slide}
                 objects={objects}
                 width={widthThumbnail}
                 height={heightThumbnail}
-                // className={classes.thumbnail}
             />
-            // </div>
         );
     };
 
     const { setSlidesData, exportToPDF } = usePDFExport();
     const [isExporting, setIsExporting] = useState(false);
 
-    /// В компоненте SlideBar добавьте:
     useEffect(() => {
         const slidesArray = slidesOrder.map(id => slides[id]).filter(Boolean);
-        // console.log("Filtered slides:", slidesArray.length);
-        // console.log(
-        //     "All slides:",
-        //     slidesOrder.map(id => ({ id, slide: slides[id] }))
-        // );
         setSlidesData(slidesArray);
     }, [slides, slidesOrder, setSlidesData]);
 
-    // Обновите handleExportPDF:
     const handleExportPDF = async () => {
         setIsExporting(true);
         try {

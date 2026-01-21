@@ -57,10 +57,7 @@ const TopMenu = ({ onLogout }: TopMenuProps) => {
                 </div>
                 <div className={classes.extraBlock}>
                     <div
-                        onClick={() => {
-                            navigate("/ruslide/slide_show");
-                            console.log("слайд-шоу");
-                        }}
+                        onClick={() => navigate("/ruslide/slide_show")}
                         className={classes.slideShow}
                     >
                         Слайд-шоу

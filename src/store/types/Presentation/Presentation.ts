@@ -1,5 +1,6 @@
 import { type Slide } from "./Slide.ts";
 import { generateId } from "./Id.ts";
+import type { Theme } from "../../../components/ThemeBar/consts.ts";
 
 type Presentation = {
     id: string;
@@ -8,6 +9,7 @@ type Presentation = {
     slidesOrder: string[];
     selectedSlides: string[];
     currentSlide: string;
+    theme: Theme | null;
 }
 
 function createPresentation(name?: string): Presentation {
@@ -18,6 +20,7 @@ function createPresentation(name?: string): Presentation {
         slidesOrder: [],
         selectedSlides: [],
         currentSlide: "",
+        theme: null,
     };
 }
 

@@ -6,16 +6,9 @@ interface SlideThumbnailProps {
     objects: Record<string, SlideObject>;
     width: number;
     height: number;
-    // className: string;
 }
 
-export const SlideThumbnail = ({
-    slide,
-    objects,
-    // className,
-    width,
-    height,
-}: SlideThumbnailProps) => {
+export const SlideThumbnail = ({ slide, objects, width, height }: SlideThumbnailProps) => {
     const scale = width / 800;
     const renderBackground = () => {
         if (slide?.background.type === "color") {

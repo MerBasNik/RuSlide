@@ -6,9 +6,11 @@ import {
     restoreStateAction,
     selectSlideAction,
     setBackgroundAction,
-    setCurrentSlideAction, setPresentationAction,
+    setCurrentSlideAction,
+    setPresentationAction,
     setPresentationNameAction,
     setSlidesOrderAction,
+    setThemeAction,
 } from "./PresentationActions.ts";
 import {
     addObjectAction,
@@ -52,6 +54,7 @@ const presentationSlice = createSlice({
         updateTextObject: updateTextObjectAction,
         updateTextStyle: updateTextStyleAction,
         setCurrentObject: setCurrentObjectAction,
+        setTheme: setThemeAction,
     },
 });
 
@@ -73,6 +76,7 @@ export const {
     updateTextObject,
     updateTextStyle,
     setCurrentObject,
+    setTheme,
 } = presentationSlice.actions;
 
 export default presentationSlice.reducer;

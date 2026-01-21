@@ -18,11 +18,11 @@
 .presentationCard {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    /*align-items: center;*/
+    /*justify-content: center;*/
     max-width: 252px;
     width: 100%;
-    height: 197px;
+    height: 195px;
     cursor: pointer;
     border: 1px solid black;
     background-color: white;

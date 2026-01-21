@@ -29,8 +29,9 @@ const PresentationSchema = {
         slidesOrder: { type: 'array' },
         selectedSlides: { type: 'array' },
         currentSlide: { type: 'string' },
+        theme: { type: 'object' },
     },
-    required: ['id', 'name', 'slides', 'slidesOrder', 'selectedSlides', 'currentSlide'],
+    required: ['id', 'name', 'slides', 'slidesOrder', 'selectedSlides', 'currentSlide', 'theme'],
     additionalProperties: false,
 } as const;
 

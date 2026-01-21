@@ -119,9 +119,9 @@ const HomePage = () => {
                                 <SlideThumbnail
                                     slide={pres.slides[pres.slidesOrder[0]] || null}
                                     objects={pres.slides[pres.slidesOrder[0]]?.objects || {}}
-                                    width={245}
-                                    height={140}
-                                    className={classes.presentationThumb}
+                                    width={250}
+                                    height={143}
+                                    // className={classes.presentationThumb}
                                 />
                                 <div className={classes.presentationInfo}>
                                     <p className={classes.presentationName}>{pres.name}</p>

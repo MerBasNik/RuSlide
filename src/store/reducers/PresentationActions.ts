@@ -2,6 +2,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { Slide } from "../types/Presentation/Slide.ts";
 import type { Background } from "../types/Background/Background.ts";
 import type { Presentation } from "../types/Presentation/Presentation.ts";
+import type { Theme } from "../../components/ThemeBar/consts.ts";
 
 export const setPresentationAction = (_state: Presentation, action: PayloadAction<Presentation>) => {
     return action.payload;
@@ -52,4 +53,8 @@ export const setBackgroundAction = (
 
 export const restoreStateAction = (_state: Presentation, action: PayloadAction<Presentation>) => {
     return action.payload;
+}
+
+export const setThemeAction = (state: Presentation, action: PayloadAction<Theme>) => {
+    state.theme = action.payload;
 }
