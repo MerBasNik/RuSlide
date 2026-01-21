@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import  { type Presentation } from "../types/Presentation/Presentation.ts";
+import { type Presentation } from "../types/Presentation/Presentation.ts";
 import {
     addSlideAction,
     deleteSlideAction,

@@ -47,10 +47,12 @@
 .btn:hover {
     background-color: #e3c39d;
 }
-.loginBtn, .registerBtn {
+.loginBtn,
+.registerBtn {
     background-color: #f8e8d5;
 }
-.loginBtn:hover, .registerBtn:hover {
+.loginBtn:hover,
+.registerBtn:hover {
     background-color: #e3c39d;
 }
 
@@ -101,6 +103,8 @@
     border: 2px solid rgba(46, 134, 186, 0.2);
 }
 .label {
-    font-family: Inter Regular, sans-serif;
-    color: #093B59;
+    font-family:
+        Inter Regular,
+        sans-serif;
+    color: #093b59;
 }
