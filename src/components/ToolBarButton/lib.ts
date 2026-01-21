@@ -1,7 +1,9 @@
 import { storage } from "../../../services/appwrite/config.ts";
 import { ID } from "appwrite";
 
-export const getImageDimensionsFromFile = (file: File): Promise<{ width: number; height: number }> => {
+export const getImageDimensionsFromFile = (
+    file: File
+): Promise<{ width: number; height: number }> => {
     return new Promise((resolve, reject) => {
         const img = new Image();
         const url = URL.createObjectURL(file);

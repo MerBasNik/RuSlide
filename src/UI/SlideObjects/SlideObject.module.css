@@ -1,9 +1,11 @@
-.slideObj, .textElement {
+.slideObj,
+.textElement {
     position: absolute;
     transition: all 0.15s ease;
 }
 
-.slideObj.selected, .textElement.selected {
+.slideObj.selected,
+.textElement.selected {
     border: 2px solid #007bff;
     background-color: rgba(0, 123, 255, 0.05);
     z-index: 100;
@@ -26,7 +28,6 @@
     min-height: 20px;
     overflow: hidden;
 }
-
 
 .slideObj:hover:not(.selected) {
     border: 1px solid #ccc;

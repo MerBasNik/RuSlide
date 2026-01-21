@@ -10,7 +10,7 @@ type Presentation = {
     selectedSlides: string[];
     currentSlide: string;
     theme: Theme | null;
-}
+};
 
 function createPresentation(name?: string): Presentation {
     return {
@@ -25,6 +25,4 @@ function createPresentation(name?: string): Presentation {
 }
 
 export type { Presentation };
-export {
-    createPresentation,
-};
+export { createPresentation };

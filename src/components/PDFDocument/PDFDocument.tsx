@@ -13,7 +13,7 @@ const PDFDocumentComponent: React.FC<PDFDocumentProps> = ({ slides }) => {
     return (
         <Document>
             {slides.map((slide, index) => (
-                <Page key={index} orientation="landscape" size={[540, 960]} style={styles.page}>
+                <Page key={index} orientation="landscape" size={[531, 940]} style={styles.page}>
                     <View style={styles.slide}>
                         {slide.background.type === "color" && (
                             <View

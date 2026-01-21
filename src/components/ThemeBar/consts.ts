@@ -29,11 +29,19 @@ export const Themes: Theme[] = [
         id: "3",
         name: "Модель",
         mainSlide: {
-            background: { type: TypeBackground.Picture, src: "/themes/Модель_главная.png", base64: "" },
+            background: {
+                type: TypeBackground.Picture,
+                src: "/themes/Модель_главная.png",
+                base64: "",
+            },
             textStyle: { color: "#000000" },
         },
         allSlides: {
-            background: { type: TypeBackground.Picture, src: "/themes/Модель_основа.png", base64: "" },
+            background: {
+                type: TypeBackground.Picture,
+                src: "/themes/Модель_основа.png",
+                base64: "",
+            },
             textStyle: { color: "#000000" },
         },
     },
@@ -41,11 +49,19 @@ export const Themes: Theme[] = [
         id: "4",
         name: "Поток",
         mainSlide: {
-            background: { type: TypeBackground.Picture, src: "/themes/Поток_главная.png", base64: "" },
+            background: {
+                type: TypeBackground.Picture,
+                src: "/themes/Поток_главная.png",
+                base64: "",
+            },
             textStyle: { color: "#000000" },
         },
         allSlides: {
-            background: { type: TypeBackground.Picture, src: "/themes/Поток_основа.png", base64: "" },
+            background: {
+                type: TypeBackground.Picture,
+                src: "/themes/Поток_основа.png",
+                base64: "",
+            },
             textStyle: { color: "#000000" },
         },
     },
@@ -53,11 +69,19 @@ export const Themes: Theme[] = [
         id: "5",
         name: "Мята",
         mainSlide: {
-            background: { type: TypeBackground.Picture, src: "/themes/Мята_главная.png", base64: "" },
+            background: {
+                type: TypeBackground.Picture,
+                src: "/themes/Мята_главная.png",
+                base64: "",
+            },
             textStyle: { color: "#ffffff" },
         },
         allSlides: {
-            background: { type: TypeBackground.Picture, src: "/themes/Мята_основа.png", base64: "" },
+            background: {
+                type: TypeBackground.Picture,
+                src: "/themes/Мята_основа.png",
+                base64: "",
+            },
             textStyle: { color: "#000000" },
         },
     },
@@ -65,11 +89,19 @@ export const Themes: Theme[] = [
         id: "6",
         name: "Небо",
         mainSlide: {
-            background: { type: TypeBackground.Picture, src: "/themes/Небо_главная.png", base64: "" },
+            background: {
+                type: TypeBackground.Picture,
+                src: "/themes/Небо_главная.png",
+                base64: "",
+            },
             textStyle: { color: "#ffffff" },
         },
         allSlides: {
-            background: { type: TypeBackground.Picture, src: "/themes/Небо_основа.png", base64: "" },
+            background: {
+                type: TypeBackground.Picture,
+                src: "/themes/Небо_основа.png",
+                base64: "",
+            },
             textStyle: { color: "#000000" },
         },
     },
