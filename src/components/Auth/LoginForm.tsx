@@ -18,7 +18,7 @@ const LoginForm = () => {
         setError("");
         try {
             const user = await login(email, password);
-            if (user) {
+            if (user && user.id) {
                 setUser(user);
                 setIsAuth(true);
                 navigate("/ruslide/home");

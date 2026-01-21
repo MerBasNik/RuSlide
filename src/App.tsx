@@ -23,7 +23,6 @@ function App() {
                 setUser(null);
             }
         } catch (error) {
-            console.error("Auth check error:", error);
             setIsAuth(false);
             setUser(null);
         } finally {

@@ -1,6 +1,6 @@
 import { type Slide } from "./Slide.ts";
 import { generateId } from "./Id.ts";
-import type { Theme } from "../../../components/ThemeBar/consts.ts";
+import type { Theme } from "../Background/Background.ts";
 
 type Presentation = {
     id: string;

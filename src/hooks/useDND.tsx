@@ -62,7 +62,6 @@ export const useDragAndDrop = ({ typeDND, onDragEnd, containerRef }: DragConfig)
                     visible: true,
                     item: item,
                 });
-                // Запоминаем начальную позицию мыши для слайдов
                 startMousePos.current = { x: e.clientX, y: e.clientY };
             }
         },
@@ -72,9 +71,8 @@ export const useDragAndDrop = ({ typeDND, onDragEnd, containerRef }: DragConfig)
     const onMove = useCallback(
         (e: MouseEvent) => {
             if (typeDND === "slide") {
-                // Обновляем позицию превью с отступом от курсора
-                const newX = e.clientX - 88; // Половина ширины миниатюры
-                const newY = e.clientY - 49; // Половина высоты миниатюры
+                const newX = e.clientX - 88;
+                const newY = e.clientY - 49;
 
                 requestAnimationFrame(() => {
                     setDragPreview(prev => ({
@@ -84,7 +82,6 @@ export const useDragAndDrop = ({ typeDND, onDragEnd, containerRef }: DragConfig)
                     }));
                 });
 
-                // Находим элемент под курсором
                 const elements = document.elementsFromPoint(e.clientX, e.clientY);
                 const onDropElement = elements.find(el => el.hasAttribute("data-drag-id"));
 
@@ -136,7 +133,6 @@ export const useDragAndDrop = ({ typeDND, onDragEnd, containerRef }: DragConfig)
     const onDrop = useCallback(() => {
         if (isDragging) {
             if (typeDND === "slide") {
-                // Вызываем onDragEnd с ID перетаскиваемых слайдов и целевым ID
                 onDragEnd(dragElementsId.current, targetId || "");
             }
             if (typeDND === "objects") {

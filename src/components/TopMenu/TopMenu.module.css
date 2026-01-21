@@ -109,20 +109,3 @@
     cursor: pointer;
     color: black;
 }
-/*.userBlock {*/
-/*    display: flex;*/
-/*    align-items: center;*/
-/*    gap: 1rem;*/
-/*}*/
-
-/*.logoutButton {*/
-/*    color: #f56565;*/
-/*    cursor: pointer;*/
-/*    padding: 0.5rem;*/
-/*    border-radius: 4px;*/
-/*    transition: background-color 0.2s;*/
-/*}*/
-
-/*.logoutButton:hover {*/
-/*    background-color: rgba(245, 101, 101, 0.1);*/
-/*}*/

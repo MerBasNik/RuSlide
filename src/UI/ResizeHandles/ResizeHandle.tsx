@@ -25,35 +25,3 @@ export const ResizeHandles = ({ elementId, onResizeStart, isSelected }: ResizeHa
         </div>
     );
 };
-//
-// export const ResizeHandles = () => {
-//     const handles = [
-//         { action: "resize-top", cursor: "ns-resize", style: { top: -6, left: "50%" } },
-//         { action: "resize-bottom", cursor: "ns-resize", style: { bottom: -6, left: "50%" } },
-//         { action: "resize-left", cursor: "ew-resize", style: { left: -6, top: "50%" } },
-//         { action: "resize-right", cursor: "ew-resize", style: { right: -6, top: "50%" } },
-//
-//         { action: "resize-tl", cursor: "nwse-resize", style: { top: -6, left: -6 } },
-//         { action: "resize-br", cursor: "nwse-resize", style: { bottom: -6, right: -6 } },
-//     ];
-//
-//     return (
-//         <>
-//             {handles.map(h => (
-//                 <div
-//                     key={h.action}
-//                     data-action={h.action}
-//                     style={{
-//                         position: "absolute",
-//                         width: 12,
-//                         height: 12,
-//                         background: "#333",
-//                         transform: "translate(-50%, -50%)",
-//                         cursor: h.cursor,
-//                         ...h.style,
-//                     }}
-//                 />
-//             ))}
-//         </>
-//     );
-// };

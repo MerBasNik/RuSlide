@@ -7,7 +7,7 @@ export const getImageDimensionsFromFile = (file: File): Promise<{ width: number;
         const url = URL.createObjectURL(file);
 
         img.onload = () => {
-            URL.revokeObjectURL(url); // Очистка
+            URL.revokeObjectURL(url);
             resolve({
                 width: img.naturalWidth,
                 height: img.naturalHeight,

@@ -5,7 +5,6 @@ import { NavLink, useNavigate } from "react-router";
 import { AuthContext } from "../../context/context.ts";
 
 const RegisterForm = () => {
-    // const { handleLoginSuccess } = authService();
     const { setIsAuth, setUser } = useContext(AuthContext);
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
@@ -13,7 +12,6 @@ const RegisterForm = () => {
     const [name, setName] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
-    // const [isLoading, setIsLoading] = useState(false);
 
     const { register, login } = authService();
 
@@ -25,20 +23,17 @@ const RegisterForm = () => {
         }
 
         setError("");
-        // setIsLoading(true);
 
         try {
             await register(email, password, name);
             const user = await login(email, password);
-            if (user) {
+            if (user && user.id) {
                 setUser(user);
                 setIsAuth(true);
                 navigate("/ruslide/home");
             }
         } catch (error: any) {
             setError("Registration failed: " + error.message);
-        } finally {
-            // setIsLoading(false);
         }
     };
 
